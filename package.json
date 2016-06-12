@@ -1,0 +1,35 @@
+{
+  "name": "ackee-tracker",
+  "moduleName": "ackee-tracker",
+  "version": "0.0.1",
+  "authors": [
+    "Tobias Reich <tobias@electerious.com>"
+  ],
+  "description": "",
+  "main": "dist/ackee-tracker.min.js",
+  "keywords": [
+    "ackee",
+    "tracking",
+    "tracker",
+    "analytics",
+    "statistics"
+  ],
+  "scripts": {
+    "start": "gulp watch",
+    "compile": "gulp"
+  },
+  "license": "MIT",
+  "homepage": "http://github.com/electerious/ackee-tracker",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/electerious/ackee-tracker.git"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "devDependencies": {
+    "@electerious/basictasks": "1.4.0",
+    "gulp": "^3.9.1"
+  }
+}
