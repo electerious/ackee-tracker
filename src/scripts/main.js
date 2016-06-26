@@ -70,6 +70,17 @@ const getData = function() {
 
 }
 
+/**
+ * Sends a request to a specified URL.
+ * Won't catch all errors as some are already logged by the browser.
+ * In this case the callback won't fire.
+ * @param {String} method - Type of request.
+ * @param {String} url - Server (file) location.
+ * @param {String} userId - Id of the user.
+ * @param {String} domainId - Id of the domain.
+ * @param {Object} data - Data which should be transferred to the server.
+ * @param {Function} next - The callback that handles the response. Receives the following properties: err, json.
+ */
 const send = function(method, url, userId, domainId, data, next) {
 
 	const xhr = new XMLHttpRequest()
@@ -94,10 +105,6 @@ const send = function(method, url, userId, domainId, data, next) {
 		}
 
 	}
-
-	xhr.onerror   = next(new Error('An error occurred while transferring data to the server'))
-	xhr.onabort   = next(new Error('Transfer to server has been canceled'))
-	xhr.ontimeout = next(new Error('Transfer to server timed out'))
 
 	xhr.send(JSON.stringify(data))
 
