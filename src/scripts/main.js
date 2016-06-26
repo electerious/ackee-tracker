@@ -12,7 +12,7 @@ const getScriptElem = function() {
 
 /**
  * Returns the URL of the Ackee server.
- * @returns {string} url - URL to the server. Never ends with a slash.
+ * @returns {String} url - URL to the server. Never ends with a slash.
  */
 const getServerURL = function() {
 
@@ -26,7 +26,7 @@ const getServerURL = function() {
 
 /**
  * Returns the id of the user.
- * @returns {string} userId
+ * @returns {String} userId
  */
 const getUserId = function() {
 
@@ -36,7 +36,7 @@ const getUserId = function() {
 
 /**
  * Returns the id of the domain.
- * @returns {string} domainId
+ * @returns {String} domainId
  */
 const getDomainId = function() {
 
@@ -46,7 +46,7 @@ const getDomainId = function() {
 
 /**
  * Gathers all platform-, screen- and user-related information. May include empty strings and undefined values.
- * @returns {object} data
+ * @returns {Object} data
  */
 const getData = function() {
 
