@@ -1,31 +1,6 @@
 import platform from 'platform'
 
 /**
- * Converts an object into query string.
- * Skips empty strings or undefined values.
- * @param {object} obj
- * @returns {string} query
- */
-const serialize = function(obj) {
-
-	const query = []
-
-	for (const p in obj) {
-
-		const value = obj[p]
-
-		if (obj.hasOwnProperty(p)===true) continue
-		if (value==null || value=='')     continue
-
-		query.push(`${ encodeURIComponent(p) }=${ encodeURIComponent(value) }`)
-
-	}
-
-	return query.join('&')
-
-}
-
-/**
  * Returns the Ackee script element.
  * @returns {HTMLElement} elem
  */
@@ -37,15 +12,15 @@ const getScriptElem = function() {
 
 /**
  * Returns the URL of the Ackee server.
- * @returns {string} url - URL to the server. Ends with a slash.
+ * @returns {string} url - URL to the server. Never ends with a slash.
  */
-const getServer = function() {
+const getServerURL = function() {
 
-	let attr = getScriptElem().getAttribute('data-ackee')
+	let url = getScriptElem().getAttribute('data-ackee')
 
-	if (attr.substr(-1)!=='/') attr += '/'
+	if (url.substr(-1)==='/') url = url.substr(0, url.length - 1)
 
-	return attr
+	return url
 
 }
 
@@ -94,3 +69,46 @@ const getData = function() {
 	}
 
 }
+
+const send = function(method, url, userId, domainId, data, next) {
+
+	const xhr = new XMLHttpRequest()
+
+	xhr.open(method, `${ url }/users/${ userId }/domains/${ domainId }/records`)
+
+	xhr.onload = () => {
+
+		if (xhr.status===200) {
+
+			let json = null
+
+			try { json = JSON.parse(xhr.responseText) }
+			catch(e) { return next(new Error('Failed to parse response from server')) }
+
+			next(null, json)
+
+		} else {
+
+			next(new Error('Server returned with an unhandled status'))
+
+		}
+
+	}
+
+	xhr.onerror   = next(new Error('An error occurred while transferring data to the server'))
+	xhr.onabort   = next(new Error('Transfer to server has been canceled'))
+	xhr.ontimeout = next(new Error('Transfer to server timed out'))
+
+	xhr.send(JSON.stringify(data))
+
+}
+
+send('POST', getServerURL(), getUserId(), getDomainId(), getData(), (err, json) => {
+
+	if (err!=null) {
+		throw err
+	}
+
+	console.log(json)
+
+})
