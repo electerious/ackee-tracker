@@ -19,7 +19,7 @@
     "compile": "gulp"
   },
   "license": "MIT",
-  "homepage": "http://github.com/electerious/ackee-tracker",
+  "homepage": "https://github.com/electerious/ackee-tracker",
   "repository": {
     "type": "git",
     "url": "https://github.com/electerious/ackee-tracker.git"
