@@ -58,7 +58,7 @@ const getData = function() {
 		screenWidth        : screen.width,
 		screenHeight       : screen.height,
 		screenColorDepth   : screen.colorDepth,
-		devicedeviceName   : platform.product,
+		deviceName         : platform.product,
 		deviceManufacturer : platform.manufacturer,
 		osName             : platform.os.family,
 		osVersion          : platform.os.version,
