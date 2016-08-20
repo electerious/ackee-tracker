@@ -46,9 +46,9 @@ const getDomainId = function() {
 
 /**
  * Gathers all platform-, screen- and user-related information. May include empty strings and undefined values.
- * @returns {Object} data
+ * @returns {Object} attributes
  */
-const getData = function() {
+const getAttributes = function() {
 
 	return {
 		siteLocation       : window.location.href,
@@ -76,16 +76,21 @@ const getData = function() {
  * In this case the callback won't fire.
  * @param {String} method - Type of request.
  * @param {String} url - Server (file) location.
- * @param {String} userId - Id of the user.
- * @param {String} domainId - Id of the domain.
- * @param {Object} data - Data which should be transferred to the server.
+ * @param {Object} attributes - Attributes which should be transferred to the server.
  * @param {Function} next - The callback that handles the response. Receives the following properties: err, json.
  */
-const send = function(method, url, userId, domainId, data, next) {
+const send = function(method, url, attributes, next) {
 
 	const xhr = new XMLHttpRequest()
 
-	xhr.open(method, `${ url }/users/${ userId }/domains/${ domainId }/records`)
+	const parameters = {
+		data: {
+			type       : 'records',
+			attributes : attributes
+		}
+	}
+
+	xhr.open(method, url)
 
 	xhr.onload = () => {
 
@@ -106,11 +111,12 @@ const send = function(method, url, userId, domainId, data, next) {
 
 	}
 
-	xhr.send(JSON.stringify(data))
+	xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+	xhr.send(JSON.stringify(parameters))
 
 }
 
-send('POST', getServerURL(), getUserId(), getDomainId(), getData(), (err, json) => {
+send('POST', `${ getServerURL() }/users/${ getUserId() }/domains/${ getDomainId() }/records`, getAttributes(), (err, json) => {
 
 	if (err!=null) {
 		throw err
