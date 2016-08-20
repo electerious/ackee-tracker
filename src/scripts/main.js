@@ -94,7 +94,7 @@ const send = function(method, url, userId, domainId, data, next) {
 			let json = null
 
 			try { json = JSON.parse(xhr.responseText) }
-			catch(e) { return next(new Error('Failed to parse response from server')) }
+			catch (e) { return next(new Error('Failed to parse response from server')) }
 
 			next(null, json)
 
