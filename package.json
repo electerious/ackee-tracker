@@ -29,7 +29,7 @@
     "src"
   ],
   "devDependencies": {
-    "@electerious/basictasks": "1.4.0",
+    "@electerious/basictasks": "2.0.0",
     "gulp": "^3.9.1"
   },
   "dependencies": {
