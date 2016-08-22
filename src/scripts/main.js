@@ -79,7 +79,7 @@ const getAttributes = function() {
  * @param {Object} attributes - Attributes which should be transferred to the server.
  * @param {Function} next - The callback that handles the response. Receives the following properties: err, json.
  */
-const send = function(method, url, attributes, next) {
+const send = function(method, url, attributes, next = () => {}) {
 
 	const xhr = new XMLHttpRequest()
 
@@ -94,7 +94,7 @@ const send = function(method, url, attributes, next) {
 
 	xhr.onload = () => {
 
-		if (xhr.status===200) {
+		if (xhr.status===200 || xhr.status===201) {
 
 			let json = null
 
@@ -122,6 +122,12 @@ send('POST', `${ getServerURL() }/users/${ getUserId() }/domains/${ getDomainId(
 		throw err
 	}
 
-	console.log(json)
+	const url = getServerURL() + json.links.self
+
+	setInterval(() => {
+
+		send('PATCH', url)
+
+	}, 5000)
 
 })
