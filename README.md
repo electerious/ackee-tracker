@@ -62,7 +62,8 @@ const instance = ackeeTracker.create({
 	userId   : 'a2d39b90-68a1-11e6-8047-79c0c2d9bce0',
 	domainId : 'hd11f820-68a1-11e6-8047-79c0c2d9bce0'
 }, {
-	ignoreLocalhost: false
+	ignoreLocalhost : false,
+	doNotTrack      : navigator.doNotTrack
 })
 ```
 
@@ -120,6 +121,12 @@ The option-object can include the following properties:
 	/*
 	 * Prevents data to leave the client when on localhost.
 	 */
-	ignoreLocalhost: true
+	ignoreLocalhost: true,
+	/*
+	 * Disables tracking.
+	 * Use navigator.doNotTrack to disable tracking when DNT is enabled.
+	 * Truthy values are true and '1'. Everything else is considered as false.
+	 */
+	doNotTrack: false
 }
 ```

@@ -7,7 +7,12 @@ import platform from 'platform'
  */
 const validate = function(opts = {}) {
 
+	// Convert doNotTrack to boolean as navigator.doNotTrack is '0' or '1'
+	if (opts.doNotTrack==='0') opts.doNotTrack = false
+	if (opts.doNotTrack==='1') opts.doNotTrack = true
+
 	if (opts.ignoreLocalhost!==false) opts.ignoreLocalhost = true
+	if (opts.ignoreLocalhost!==true)  opts.ignoreLocalhost = false
 
 	return opts
 
@@ -106,6 +111,10 @@ const send = function(method, url, attrs, next) {
  * @param {Object} opts
  */
 const record = function(server, userId, domainId, attrs, opts) {
+
+	if (opts.doNotTrack===true) {
+		return console.warn('Ackee ignores you because doNotTrack is enabled')
+	}
 
 	if (opts.ignoreLocalhost===true && isLocalhost(location.hostname)===true) {
 		return console.warn('Ackee ignores you because you are on localhost')
