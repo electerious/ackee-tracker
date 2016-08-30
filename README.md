@@ -8,6 +8,7 @@ A script which interacts with the REST API of [ackee-server](https://github.com/
 - [Setup](#setup)
 - [API](#api)
 - [Instance API](#instance-api)
+- [Options](#options)
 
 ## Requirements
 
@@ -45,7 +46,7 @@ Creates a new ackee-tracker instance.
 
 Be sure to assign your instance to a variable. Tracking a visit by creating a new record is only possible with an instance.
 
-Example:
+Examples:
 
 ```js
 const instance = ackeeTracker.create({
@@ -55,9 +56,20 @@ const instance = ackeeTracker.create({
 })
 ```
 
+```js
+const instance = ackeeTracker.create({
+	server   : 'http://example.com',
+	userId   : 'a2d39b90-68a1-11e6-8047-79c0c2d9bce0',
+	domainId : 'hd11f820-68a1-11e6-8047-79c0c2d9bce0'
+}, {
+	ignoreLocalhost: false
+})
+```
+
 Parameters:
 
 - `server` `{Object}` An object with details about your [ackee-server](https://github.com/electerious/ackee-server) installation. You can obtain the `userId` and `domainId` from the `db.json` created by [ackee-server](https://github.com/electerious/ackee-server). The `server` property must not end with a slash.
+- `opts` `{?Object}` An object of [options](#options).
 
 Returns:
 
@@ -98,3 +110,16 @@ instance.record(ackeeTracker.attributes())
 Parameters:
 
 - `attributes` `{?Object}` Attributes which should be transferred to the server. Will be `ackeeTracker.attributes()` unless specified otherwise.
+
+## Options
+
+The option-object can include the following properties:
+
+```js
+{
+	/*
+	 * Prevents data to leave the client when on localhost.
+	 */
+	ignoreLocalhost: true
+}
+```

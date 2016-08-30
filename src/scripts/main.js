@@ -1,6 +1,30 @@
 import platform from 'platform'
 
 /**
+ * Validates options and sets defaults for undefined properties.
+ * @param {Object} opts
+ * @returns {Object} opts - Validated options.
+ */
+const validate = function(opts = {}) {
+
+	if (opts.ignoreLocalhost!==false) opts.ignoreLocalhost = true
+
+	return opts
+
+}
+
+/**
+ * Determines if a host is a localhost.
+ * @param {String} hostname - Hostname which should be tested.
+ * @returns {Boolean} isLocalhost
+ */
+const isLocalhost = function(hostname) {
+
+	return (hostname==='localhost' || hostname==='127.0.0.1' || hostname==='::1' ? true : false)
+
+}
+
+/**
  * Gathers all platform-, screen- and user-related information. May include empty strings and undefined values.
  * @returns {Object} attributes
  */
@@ -79,8 +103,13 @@ const send = function(method, url, attrs, next) {
  * @param {String} userId - Id of the user.
  * @param {String} domainId - Id of the domain.
  * @param {Object} attrs - Attributes which should be transferred to the server.
+ * @param {Object} opts
  */
-const record = function(server, userId, domainId, attrs) {
+const record = function(server, userId, domainId, attrs, opts) {
+
+	if (opts.ignoreLocalhost===true && isLocalhost(location.hostname)===true) {
+		return console.warn('Ackee ignores you because you are on localhost')
+	}
 
 	// Send initial request to server. This will create a new record.
 	send('POST', `${ server }/users/${ userId }/domains/${ domainId }/records`, attrs, (err, json) => {
@@ -112,16 +141,20 @@ const record = function(server, userId, domainId, attrs) {
 /**
  * Creats a new instance.
  * @param {Object} server - Server details.
+ * @param {Object} opts
  * @returns {Object} instance
  */
-export const create = function({ server, userId, domainId }) {
+export const create = function({ server, userId, domainId }, opts) {
+
+	// Validate options
+	opts = validate(opts)
 
 	// Create a new record on the server and updates the record
 	// very x seconds to track the duration of the visit. Try to use
 	// the default attributes when no custom attributes defined.
 	const _record = (attrs = attributes()) => {
 
-		record(server, userId, domainId, attrs)
+		record(server, userId, domainId, attrs, opts)
 
 	}
 
