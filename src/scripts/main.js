@@ -2,7 +2,7 @@ import platform from 'platform'
 
 /**
  * Validates options and sets defaults for undefined properties.
- * @param {Object} opts
+ * @param {?Object} opts
  * @returns {Object} opts - Validated options.
  */
 const validate = function(opts = {}) {
@@ -150,7 +150,7 @@ const record = function(server, userId, domainId, attrs, opts) {
 /**
  * Creats a new instance.
  * @param {Object} server - Server details.
- * @param {Object} opts
+ * @param {?Object} opts
  * @returns {Object} instance
  */
 export const create = function({ server, userId, domainId }, opts) {
