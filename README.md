@@ -45,7 +45,7 @@ Creates a new ackee-tracker instance.
 
 Be sure to assign your instance to a variable. Tracking a visit by creating a new record is only possible with an instance.
 
-Examples:
+Example:
 
 ```js
 const instance = ackeeTracker.create({
