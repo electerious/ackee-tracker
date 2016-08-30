@@ -1,54 +1,10 @@
 import platform from 'platform'
 
 /**
- * Returns the Ackee script element.
- * @returns {HTMLElement} elem
- */
-const getScriptElem = function() {
-
-	return document.querySelector('script[data-ackee]')
-
-}
-
-/**
- * Returns the URL of the Ackee server.
- * @returns {String} url - URL to the server. Never ends with a slash.
- */
-const getServerURL = function() {
-
-	let url = getScriptElem().getAttribute('data-ackee')
-
-	if (url.substr(-1)==='/') url = url.substr(0, url.length - 1)
-
-	return url
-
-}
-
-/**
- * Returns the id of the user.
- * @returns {String} userId
- */
-const getUserId = function() {
-
-	return getScriptElem().getAttribute('data-userId')
-
-}
-
-/**
- * Returns the id of the domain.
- * @returns {String} domainId
- */
-const getDomainId = function() {
-
-	return getScriptElem().getAttribute('data-domainId')
-
-}
-
-/**
  * Gathers all platform-, screen- and user-related information. May include empty strings and undefined values.
  * @returns {Object} attributes
  */
-const getAttributes = function() {
+export const attributes = function() {
 
 	return {
 		siteLocation       : window.location.href,
@@ -76,17 +32,17 @@ const getAttributes = function() {
  * In this case the callback won't fire.
  * @param {String} method - Type of request.
  * @param {String} url - Server (file) location.
- * @param {Object} attributes - Attributes which should be transferred to the server.
+ * @param {?Object} attrs - Attributes which should be transferred to the server.
  * @param {Function} next - The callback that handles the response. Receives the following properties: err, json.
  */
-const send = function(method, url, attributes, next = () => {}) {
+const send = function(method, url, attrs, next) {
 
 	const xhr = new XMLHttpRequest()
 
 	const parameters = {
 		data: {
 			type       : 'records',
-			attributes : attributes
+			attributes : attrs
 		}
 	}
 
@@ -116,18 +72,65 @@ const send = function(method, url, attributes, next = () => {}) {
 
 }
 
-send('POST', `${ getServerURL() }/users/${ getUserId() }/domains/${ getDomainId() }/records`, getAttributes(), (err, json) => {
+/**
+ * Creates a new record on the server and updates the record
+ * every x seconds to track the duration of the visit.
+ * @param {String} server - URL of the Ackee server.
+ * @param {String} userId - Id of the user.
+ * @param {String} domainId - Id of the domain.
+ * @param {Object} attrs - Attributes which should be transferred to the server.
+ */
+const record = function(server, userId, domainId, attrs) {
 
-	if (err!=null) {
-		throw err
+	// Send initial request to server. This will create a new record.
+	send('POST', `${ server }/users/${ userId }/domains/${ domainId }/records`, attrs, (err, json) => {
+
+		if (err!=null) {
+			throw err
+		}
+
+		// Use the URL from the response of the initial request
+		const url = server + json.links.self
+
+		// PATCH the record every x seconds to track the duration of the visit
+		setInterval(() => {
+
+			send('PATCH', url, null, (err, json) => {
+
+				if (err!=null) {
+					throw err
+				}
+
+			})
+
+		}, 5000)
+
+	})
+
+}
+
+/**
+ * Creats a new instance.
+ * @param {Object} server - Server details.
+ * @returns {Object} instance
+ */
+export const create = function({ server, userId, domainId }) {
+
+	// Create a new record on the server and updates the record
+	// very x seconds to track the duration of the visit. Try to use
+	// the default attributes when no custom attributes defined.
+	const _record = (attrs = attributes()) => {
+
+		record(server, userId, domainId, attrs)
+
 	}
 
-	const url = getServerURL() + json.links.self
+	// Assign instance to a variable so the instance can be used
+	// elsewhere in the current function
+	const instance = {
+		record : _record
+	}
 
-	setInterval(() => {
+	return instance
 
-		send('PATCH', url)
-
-	}, 5000)
-
-})
+}
