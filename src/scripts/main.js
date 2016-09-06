@@ -39,7 +39,7 @@ export const attributes = function() {
 		siteLocation       : window.location.href,
 		siteReferrer       : document.referrer,
 		siteTitle          : document.title,
-		siteLanguage       : navigator.language.substr(0, 2),
+		siteLanguage       : (navigator.language || navigator.userLanguage).substr(0, 2),
 		screenWidth        : screen.width,
 		screenHeight       : screen.height,
 		screenColorDepth   : screen.colorDepth,
