@@ -8,11 +8,11 @@ import platform from 'platform'
 const validate = function(opts = {}) {
 
 	// Convert doNotTrack to boolean as navigator.doNotTrack is '0' or '1'
-	if (opts.doNotTrack==='0') opts.doNotTrack = false
-	if (opts.doNotTrack==='1') opts.doNotTrack = true
+	if (opts.doNotTrack === '0') opts.doNotTrack = false
+	if (opts.doNotTrack === '1') opts.doNotTrack = true
 
-	if (opts.ignoreLocalhost!==false) opts.ignoreLocalhost = true
-	if (opts.ignoreLocalhost!==true)  opts.ignoreLocalhost = false
+	if (opts.ignoreLocalhost !== false) opts.ignoreLocalhost = true
+	if (opts.ignoreLocalhost !== true) opts.ignoreLocalhost = false
 
 	return opts
 
@@ -25,7 +25,7 @@ const validate = function(opts = {}) {
  */
 const isLocalhost = function(hostname) {
 
-	return (hostname==='localhost' || hostname==='127.0.0.1' || hostname==='::1' ? true : false)
+	return (Boolean(hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1'))
 
 }
 
@@ -36,21 +36,21 @@ const isLocalhost = function(hostname) {
 export const attributes = function() {
 
 	return {
-		siteLocation       : window.location.href,
-		siteReferrer       : document.referrer,
-		siteTitle          : document.title,
-		siteLanguage       : (navigator.language || navigator.userLanguage).substr(0, 2),
-		screenWidth        : screen.width,
-		screenHeight       : screen.height,
-		screenColorDepth   : screen.colorDepth,
-		deviceName         : platform.product,
-		deviceManufacturer : platform.manufacturer,
-		osName             : platform.os.family,
-		osVersion          : platform.os.version,
-		browserName        : platform.name,
-		browserVersion     : platform.version,
-		browserWidth       : document.documentElement.clientWidth || window.outerWidth,
-		browserHeight      : document.documentElement.clientHeight || window.outerHeight
+		siteLocation: window.location.href,
+		siteReferrer: document.referrer,
+		siteTitle: document.title,
+		siteLanguage: (navigator.language || navigator.userLanguage).substr(0, 2),
+		screenWidth: screen.width,
+		screenHeight: screen.height,
+		screenColorDepth: screen.colorDepth,
+		deviceName: platform.product,
+		deviceManufacturer: platform.manufacturer,
+		osName: platform.os.family,
+		osVersion: platform.os.version,
+		browserName: platform.name,
+		browserVersion: platform.version,
+		browserWidth: document.documentElement.clientWidth || window.outerWidth,
+		browserHeight: document.documentElement.clientHeight || window.outerHeight
 	}
 
 }
@@ -70,8 +70,8 @@ const send = function(method, url, attrs, next) {
 
 	const parameters = {
 		data: {
-			type       : 'records',
-			attributes : attrs
+			type: 'records',
+			attributes: attrs
 		}
 	}
 
@@ -79,12 +79,11 @@ const send = function(method, url, attrs, next) {
 
 	xhr.onload = () => {
 
-		if (xhr.status===200 || xhr.status===201) {
+		if (xhr.status === 200 || xhr.status === 201) {
 
 			let json = null
 
-			try { json = JSON.parse(xhr.responseText) }
-			catch (e) { return next(new Error('Failed to parse response from server')) }
+			try { json = JSON.parse(xhr.responseText) } catch (e) { return next(new Error('Failed to parse response from server')) }
 
 			next(null, json)
 
@@ -112,18 +111,18 @@ const send = function(method, url, attrs, next) {
  */
 const record = function(server, userId, domainId, attrs, opts) {
 
-	if (opts.doNotTrack===true) {
+	if (opts.doNotTrack === true) {
 		return console.warn('Ackee ignores you because doNotTrack is enabled')
 	}
 
-	if (opts.ignoreLocalhost===true && isLocalhost(location.hostname)===true) {
+	if (opts.ignoreLocalhost === true && isLocalhost(location.hostname) === true) {
 		return console.warn('Ackee ignores you because you are on localhost')
 	}
 
 	// Send initial request to server. This will create a new record.
 	send('POST', `${ server }/users/${ userId }/domains/${ domainId }/records`, attrs, (err, json) => {
 
-		if (err!=null) {
+		if (err != null) {
 			throw err
 		}
 
@@ -135,7 +134,7 @@ const record = function(server, userId, domainId, attrs, opts) {
 
 			send('PATCH', url, null, (err, json) => {
 
-				if (err!=null) {
+				if (err != null) {
 					throw err
 				}
 
@@ -170,7 +169,7 @@ export const create = function({ server, userId, domainId }, opts) {
 	// Assign instance to a variable so the instance can be used
 	// elsewhere in the current function
 	const instance = {
-		record : _record
+		record: _record
 	}
 
 	return instance
