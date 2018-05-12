@@ -1,6 +1,6 @@
 # ackee-tracker
 
-[![Travis Build Status](https://travis-ci.org/electerious/ackee-tracker.svg?branch=master)](https://travis-ci.org/electerious/ackee-tracker) [![Coverage Status](https://coveralls.io/repos/github/electerious/ackee-tracker/badge.svg?branch=master)](https://coveralls.io/github/electerious/ackee-tracker?branch=master) [![Dependencies](https://david-dm.org/electerious/ackee-tracker.svg)](https://david-dm.org/electerious/ackee-tracker#info=dependencies)
+[![Dependencies](https://david-dm.org/electerious/ackee-tracker.svg)](https://david-dm.org/electerious/ackee-tracker#info=dependencies)
 
 A script that interacts with the REST API of [ackee-server](https://github.com/electerious/ackee-server). Should be used to feed your server with data from your visitors.
 
