@@ -139,21 +139,17 @@ const record = function(server, userId, domainId, attrs, opts) {
 	// Send initial request to server. This will create a new record.
 	send('POST', `${ server }/users/${ userId }/domains/${ domainId }/records`, attrs, (err, json) => {
 
-		if (err != null) {
-			throw err
-		}
+		if (err != null) return console.error(err)
 
 		// Use the URL from the response of the initial request
 		const url = server + json.links.self
 
-		// PATCH the record every x seconds to track the duration of the visit
+		// PATCH the record constantly to track the duration of the visit
 		setInterval(() => {
 
 			send('PATCH', url, null, (err) => {
 
-				if (err != null) {
-					throw err
-				}
+				if (err != null) return console.error(err)
 
 			})
 
