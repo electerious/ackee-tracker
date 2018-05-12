@@ -5,7 +5,7 @@
   "authors": [
     "Tobias Reich <tobias@electerious.com>"
   ],
-  "description": "Where the magic connects: The script that transfers data to Ackee",
+  "description": "Transfer data to Ackee",
   "main": "dist/ackee-tracker.min.js",
   "keywords": [
     "ackee",
