@@ -42,7 +42,7 @@ const ackeeTracker = require('ackee-tracker')
 
 ## API
 
-### .create(server)
+### .create(server, opts)
 
 Creates a new ackee-tracker instance.
 
@@ -96,7 +96,7 @@ Returns:
 
 Each ackeeTracker instance is an object with functions you can use to track your visitor.
 
-### .record()
+### .record(attributes)
 
 Creates a new record on the server and updates the record constantly to track the duration of the visit.
 
