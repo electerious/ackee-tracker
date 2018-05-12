@@ -7,12 +7,11 @@ import platform from 'platform'
  */
 const validate = function(opts = {}) {
 
-	// Convert doNotTrack to boolean as navigator.doNotTrack is '0' or '1'
-	if (opts.doNotTrack === '0') opts.doNotTrack = false
-	if (opts.doNotTrack === '1') opts.doNotTrack = true
+	// Copy object to avoid changes by reference
+	opts = Object.assign({}, opts)
 
+	if (opts.doNotTrack !== false) opts.doNotTrack = true
 	if (opts.ignoreLocalhost !== false) opts.ignoreLocalhost = true
-	if (opts.ignoreLocalhost !== true) opts.ignoreLocalhost = false
 
 	return opts
 
@@ -20,12 +19,22 @@ const validate = function(opts = {}) {
 
 /**
  * Determines if a host is a localhost.
- * @param {String} hostname - Hostname which should be tested.
+ * @param {String} hostname - Hostname that should be tested.
  * @returns {Boolean} isLocalhost
  */
 const isLocalhost = function(hostname) {
 
-	return (Boolean(hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1'))
+	return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1'
+
+}
+
+/**
+ * Determines if DNT is enabled.
+ * @returns {Boolean} isDoNotTrackEnabled
+ */
+const isDoNotTrackEnabled = function() {
+
+	return navigator.doNotTrack === '1'
 
 }
 
@@ -61,7 +70,7 @@ export const attributes = function() {
  * In this case the callback won't fire.
  * @param {String} method - Type of request.
  * @param {String} url - Server (file) location.
- * @param {?Object} attrs - Attributes which should be transferred to the server.
+ * @param {?Object} attrs - Attributes that should be transferred to the server.
  * @param {Function} next - The callback that handles the response. Receives the following properties: err, json.
  */
 const send = function(method, url, attrs, next) {
@@ -83,13 +92,17 @@ const send = function(method, url, attrs, next) {
 
 			let json = null
 
-			try { json = JSON.parse(xhr.responseText) } catch (e) { return next(new Error('Failed to parse response from server')) }
+			try {
+				json = JSON.parse(xhr.responseText)
+			} catch (e) {
+				return next(new Error('Failed to parse response from server'))
+			}
 
-			next(null, json)
+			return next(null, json)
 
 		} else {
 
-			next(new Error('Server returned with an unhandled status'))
+			return next(new Error('Server returned with an unhandled status'))
 
 		}
 
@@ -106,12 +119,13 @@ const send = function(method, url, attrs, next) {
  * @param {String} server - URL of the Ackee server.
  * @param {String} userId - Id of the user.
  * @param {String} domainId - Id of the domain.
- * @param {Object} attrs - Attributes which should be transferred to the server.
+ * @param {Object} attrs - Attributes that should be transferred to the server.
  * @param {Object} opts
+ * @returns {?*}
  */
 const record = function(server, userId, domainId, attrs, opts) {
 
-	if (opts.doNotTrack === true) {
+	if (opts.doNotTrack === true && isDoNotTrackEnabled() === true) {
 		return console.warn('Ackee ignores you because doNotTrack is enabled')
 	}
 
@@ -132,7 +146,7 @@ const record = function(server, userId, domainId, attrs, opts) {
 		// PATCH the record every x seconds to track the duration of the visit
 		setInterval(() => {
 
-			send('PATCH', url, null, (err, json) => {
+			send('PATCH', url, null, (err) => {
 
 				if (err != null) {
 					throw err

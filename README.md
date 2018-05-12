@@ -2,7 +2,7 @@
 
 [![Travis Build Status](https://travis-ci.org/electerious/ackee-tracker.svg?branch=master)](https://travis-ci.org/electerious/ackee-tracker) [![Coverage Status](https://coveralls.io/repos/github/electerious/ackee-tracker/badge.svg?branch=master)](https://coveralls.io/github/electerious/ackee-tracker?branch=master) [![Dependencies](https://david-dm.org/electerious/ackee-tracker.svg)](https://david-dm.org/electerious/ackee-tracker#info=dependencies)
 
-A script which interacts with the REST API of [ackee-server](https://github.com/electerious/ackee-server). Should be used to feed your server with data from your visitors.
+A script that interacts with the REST API of [ackee-server](https://github.com/electerious/ackee-server). Should be used to feed your server with data from your visitors.
 
 ## Contents
 
@@ -52,20 +52,20 @@ Examples:
 
 ```js
 const instance = ackeeTracker.create({
-	server   : 'http://example.com',
-	userId   : 'a2d39b90-68a1-11e6-8047-79c0c2d9bce0',
-	domainId : 'hd11f820-68a1-11e6-8047-79c0c2d9bce0'
+	server: 'http://example.com',
+	userId: 'a2d39b90-68a1-11e6-8047-79c0c2d9bce0',
+	domainId: 'hd11f820-68a1-11e6-8047-79c0c2d9bce0'
 })
 ```
 
 ```js
 const instance = ackeeTracker.create({
-	server   : 'http://example.com',
-	userId   : 'a2d39b90-68a1-11e6-8047-79c0c2d9bce0',
-	domainId : 'hd11f820-68a1-11e6-8047-79c0c2d9bce0'
+	server: 'http://example.com',
+	userId: 'a2d39b90-68a1-11e6-8047-79c0c2d9bce0',
+	domainId: 'hd11f820-68a1-11e6-8047-79c0c2d9bce0'
 }, {
-	ignoreLocalhost : false,
-	doNotTrack      : navigator.doNotTrack
+	ignoreLocalhost: false,
+	doNotTrack: false
 })
 ```
 
@@ -80,7 +80,7 @@ Returns:
 
 ### .attributes()
 
-Gathers and returns all platform-, screen- and user-related information. May include empty strings and undefined values.
+Gathers and returns all platform-, screen- and user-related information.
 
 Example:
 
@@ -90,7 +90,7 @@ const attributes = ackeeTracker.attributes()
 
 Returns:
 
-- `{Object}` Platform-, screen- and user-related information.
+- `{Object}` Platform-, screen- and user-related information. May include empty strings and undefined values.
 
 ## Instance API
 
@@ -98,7 +98,7 @@ Each ackeeTracker instance is an object with functions you can use to track your
 
 ### .record()
 
-Creates a new record on the server and updates the record every x seconds to track the duration of the visit.
+Creates a new record on the server and updates the record constantly to track the duration of the visit.
 
 Examples:
 
@@ -112,7 +112,7 @@ instance.record(ackeeTracker.attributes())
 
 Parameters:
 
-- `attributes` `{?Object}` Attributes which should be transferred to the server. Will be `ackeeTracker.attributes()` unless specified otherwise.
+- `attributes` `{?Object}` Attributes that should be transferred to the server. Will be `ackeeTracker.attributes()` unless specified otherwise.
 
 ## Options
 
@@ -121,14 +121,12 @@ The option-object can include the following properties:
 ```js
 {
 	/*
-	 * Prevents data to leave the client when on localhost.
+	 * Disable tracking when on localhost.
 	 */
 	ignoreLocalhost: true,
 	/*
-	 * Disables tracking.
-	 * Use navigator.doNotTrack to disable tracking when DNT is enabled.
-	 * Truthy values are true and '1'. Everything else is considered as false.
+	 * Respect do-not-track setting of the user.
 	 */
-	doNotTrack: false
+	doNotTrack: true
 }
 ```
