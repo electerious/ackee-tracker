@@ -7,13 +7,16 @@ import platform from 'platform'
  */
 const validate = function(opts = {}) {
 
-	// Copy object to avoid changes by reference
-	opts = Object.assign({}, opts)
+	// Create new object to avoid changes by reference
+	const _opts = {}
 
-	if (opts.doNotTrack !== false) opts.doNotTrack = true
-	if (opts.ignoreLocalhost !== false) opts.ignoreLocalhost = true
+	if (opts.ignoreLocalhost !== false) _opts.ignoreLocalhost = true
+	else _opts.ignoreLocalhost = false
 
-	return opts
+	if (opts.doNotTrack !== false) _opts.doNotTrack = true
+	else _opts.doNotTrack = false
+
+	return _opts
 
 }
 
