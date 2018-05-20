@@ -90,7 +90,7 @@ const attributes = ackeeTracker.attributes()
 
 Returns:
 
-- `{Object}` Platform-, screen- and user-related information. May include empty strings and undefined values.
+- `{Object}` Platform-, screen- and user-related information.
 
 ## Instance API
 

@@ -42,12 +42,35 @@ const isDoNotTrackEnabled = function() {
 }
 
 /**
- * Gathers all platform-, screen- and user-related information. May include empty strings and undefined values.
+ * Iterates over an object to clean it up.
+ * @param {Object} obj - Dirty object with empty strings and values.
+ * @returns {Object} obj - Clean object without empty strings and values.
+ */
+const polish = function(obj) {
+
+	return Object.keys(obj).reduce((acc, key) => {
+
+		let value = obj[key]
+
+		value = typeof value === 'string' ? value.trim() : value
+		value = value == null ? null : value
+		value = value === '' ? null : value
+
+		acc[key] = value
+
+		return acc
+
+	}, {})
+
+}
+
+/**
+ * Gathers all platform-, screen- and user-related information.
  * @returns {Object} attributes
  */
 export const attributes = function() {
 
-	return {
+	return polish({
 		siteLocation: window.location.href,
 		siteReferrer: document.referrer,
 		siteTitle: document.title,
@@ -63,7 +86,7 @@ export const attributes = function() {
 		browserVersion: platform.version,
 		browserWidth: document.documentElement.clientWidth || window.outerWidth,
 		browserHeight: document.documentElement.clientHeight || window.outerHeight
-	}
+	})
 
 }
 
