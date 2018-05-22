@@ -53,7 +53,6 @@ Examples:
 ```js
 const instance = ackeeTracker.create({
 	server: 'http://example.com',
-	userId: 'a2d39b90-68a1-11e6-8047-79c0c2d9bce0',
 	domainId: 'hd11f820-68a1-11e6-8047-79c0c2d9bce0'
 })
 ```
@@ -61,7 +60,6 @@ const instance = ackeeTracker.create({
 ```js
 const instance = ackeeTracker.create({
 	server: 'http://example.com',
-	userId: 'a2d39b90-68a1-11e6-8047-79c0c2d9bce0',
 	domainId: 'hd11f820-68a1-11e6-8047-79c0c2d9bce0'
 }, {
 	ignoreLocalhost: false,
@@ -71,7 +69,7 @@ const instance = ackeeTracker.create({
 
 Parameters:
 
-- `server` `{Object}` An object with details about your [ackee-server](https://github.com/electerious/ackee-server) installation. You can obtain the `userId` and `domainId` from the `db.json` created by [ackee-server](https://github.com/electerious/ackee-server). The `server` property must not end with a slash.
+- `server` `{Object}` An object that contains details about your [ackee-server](https://github.com/electerious/ackee-server) installation. The `server` property must not end with a slash.
 - `opts` `{?Object}` An object of [options](#options).
 
 Returns:

@@ -91,6 +91,29 @@ export const attributes = function() {
 }
 
 /**
+ * Construct a URL from the given parameters.
+ * @param {String} server - URL to ackee-server. Must not end with a slash.
+ * @param {String} domainId - Domain id.
+ * @param {?String} recordId - Record id.
+ * @returns {String} url
+ */
+const endpoint = function(server, domainId, recordId) {
+
+	const defined = (_) => _ != null
+
+	const url = [
+		server,
+		'domains',
+		domainId,
+		'records',
+		recordId
+	]
+
+	return url.filter(defined).join('/')
+
+}
+
+/**
  * Sends a request to a specified URL.
  * Won't catch all errors as some are already logged by the browser.
  * In this case the callback won't fire.
@@ -143,13 +166,12 @@ const send = function(method, url, attrs, next) {
  * Creates a new record on the server and updates the record
  * every x seconds to track the duration of the visit.
  * @param {String} server - URL of the Ackee server.
- * @param {String} userId - Id of the user.
  * @param {String} domainId - Id of the domain.
  * @param {Object} attrs - Attributes that should be transferred to the server.
  * @param {Object} opts
  * @returns {?*}
  */
-const record = function(server, userId, domainId, attrs, opts) {
+const record = function(server, domainId, attrs, opts) {
 
 	if (opts.doNotTrack === true && isDoNotTrackEnabled() === true) {
 		return console.warn('Ackee ignores you because doNotTrack is enabled')
@@ -160,17 +182,16 @@ const record = function(server, userId, domainId, attrs, opts) {
 	}
 
 	// Send initial request to server. This will create a new record.
-	send('POST', `${ server }/users/${ userId }/domains/${ domainId }/records`, attrs, (err, json) => {
+	send('POST', endpoint(server, domainId), attrs, (err, json) => {
 
 		if (err != null) return console.error(err)
 
-		// Use the URL from the response of the initial request
-		const url = server + json.links.self
+		const recordId = json.data.id
 
 		// PATCH the record constantly to track the duration of the visit
 		setInterval(() => {
 
-			send('PATCH', url, null, (err) => {
+			send('PATCH', endpoint(server, domainId, recordId), null, (err) => {
 
 				if (err != null) return console.error(err)
 
@@ -188,7 +209,7 @@ const record = function(server, userId, domainId, attrs, opts) {
  * @param {?Object} opts
  * @returns {Object} instance
  */
-export const create = function({ server, userId, domainId }, opts) {
+export const create = function({ server, domainId }, opts) {
 
 	// Validate options
 	opts = validate(opts)
@@ -198,7 +219,7 @@ export const create = function({ server, userId, domainId }, opts) {
 	// the default attributes when no custom attributes defined.
 	const _record = (attrs = attributes()) => {
 
-		record(server, userId, domainId, attrs, opts)
+		record(server, domainId, attrs, opts)
 
 	}
 
