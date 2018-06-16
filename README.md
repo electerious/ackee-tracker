@@ -2,7 +2,7 @@
 
 [![Dependencies](https://david-dm.org/electerious/ackee-tracker.svg)](https://david-dm.org/electerious/ackee-tracker#info=dependencies)
 
-A script that interacts with the REST API of [ackee-server](https://github.com/electerious/ackee-server). Should be used to feed your server with data from your visitors.
+A script that interacts with the REST API of [Ackee](https://github.com/electerious/Ackee). Should be used to feed your server with data from your visitors.
 
 ## Contents
 
