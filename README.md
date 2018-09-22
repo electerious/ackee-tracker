@@ -18,14 +18,14 @@ ackee-tracker requires a running [ackee-server](https://github.com/electerious/a
 
 ## Setup
 
-We recommend to install ackee-tracker using [Bower](https://bower.io) or [npm](https://npmjs.com).
-
-```sh
-bower install ackee-tracker
-```
+We recommend to install ackee-tracker using [npm](https://npmjs.com) or [yarn](https://yarnpkg.com).
 
 ```sh
 npm install ackee-tracker
+```
+
+```sh
+yarn add ackee-tracker
 ```
 
 Include the JS-file at the end of your `body`…
@@ -38,6 +38,10 @@ Include the JS-file at the end of your `body`…
 
 ```js
 const ackeeTracker = require('ackee-tracker')
+```
+
+```js
+import * as ackeeTracker from 'ackee-tracker'
 ```
 
 ## API
