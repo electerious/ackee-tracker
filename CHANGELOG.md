@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [3.0.0] - 2018-08-25
 
-### New
+### Added
 
 - Added a changelog
 - Compatible with the new Ackee API
