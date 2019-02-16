@@ -18,7 +18,7 @@ ackee-tracker requires a running [ackee-server](https://github.com/electerious/a
 
 ## Setup
 
-We recommend to install ackee-tracker using [npm](https://npmjs.com) or [yarn](https://yarnpkg.com).
+We recommend installing ackee-tracker using [npm](https://npmjs.com) or [yarn](https://yarnpkg.com).
 
 ```sh
 npm install ackee-tracker
