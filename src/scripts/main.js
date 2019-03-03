@@ -126,13 +126,6 @@ const send = function(method, url, attrs, next) {
 
 	const xhr = new XMLHttpRequest()
 
-	const parameters = {
-		data: {
-			type: 'records',
-			attributes: attrs
-		}
-	}
-
 	xhr.open(method, url)
 
 	xhr.onload = () => {
@@ -158,7 +151,7 @@ const send = function(method, url, attrs, next) {
 	}
 
 	xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
-	xhr.send(JSON.stringify(parameters))
+	xhr.send(JSON.stringify(attrs))
 
 }
 
