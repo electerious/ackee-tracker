@@ -119,10 +119,10 @@ const endpoint = function(server, domainId, recordId) {
  * In this case the callback won't fire.
  * @param {String} method - Type of request.
  * @param {String} url - Server (file) location.
- * @param {?Object} attrs - Attributes that should be transferred to the server.
+ * @param {?Object} parameters - Parameters that should be transferred to the server.
  * @param {Function} next - The callback that handles the response. Receives the following properties: err, json.
  */
-const send = function(method, url, attrs, next) {
+const send = function(method, url, parameters, next) {
 
 	const xhr = new XMLHttpRequest()
 
@@ -151,7 +151,7 @@ const send = function(method, url, attrs, next) {
 	}
 
 	xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
-	xhr.send(JSON.stringify(attrs))
+	xhr.send(parameters == null ? null : JSON.stringify(parameters))
 
 }
 
@@ -197,7 +197,7 @@ const record = function(server, domainId, attrs, opts) {
 }
 
 /**
- * Creats a new instance.
+ * Creates a new instance.
  * @param {Object} server - Server details.
  * @param {?Object} opts
  * @returns {Object} instance
