@@ -27,7 +27,7 @@ const validate = function(opts = {}) {
  */
 const isLocalhost = function(hostname) {
 
-	return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1'
+	return hostname === '' || hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1'
 
 }
 
