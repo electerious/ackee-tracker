@@ -15,7 +15,7 @@ A script that interacts with the REST API of [Ackee](https://github.com/electeri
 
 ## Requirements
 
-ackee-tracker requires a running [ackee-server](https://github.com/electerious/ackee-server).
+ackee-tracker requires a running [Ackee server](https://github.com/electerious/Ackee).
 
 ## Installation
 
