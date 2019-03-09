@@ -32,7 +32,6 @@ yarn add ackee-tracker
 It's also possible to load ackee-tracker from your Ackee server. The script is served as `tracker.js`.
 
 ```html
-https://example.com/tracker.js
 <script src="https://example.com/tracker.js"></script>
 ```
 
