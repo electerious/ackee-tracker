@@ -33,7 +33,7 @@ yarn add ackee-tracker
 
 ### Automatically
 
-The easiest way to send data to your Ackee server is to include the script along with the required attributes. Ackee now tracks each page visit automatically.
+The easiest way to send data to your Ackee server is by including the script along with the required attributes. Ackee will now track each page visit automatically.
 
 ```html
 <script async src="dist/ackee-tracker.min.js" data-ackee-server="http://example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0"></script>
