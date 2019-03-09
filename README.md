@@ -7,7 +7,8 @@ A script that interacts with the REST API of [Ackee](https://github.com/electeri
 ## Contents
 
 - [Requirements](#requirements)
-- [Setup](#setup)
+- [Installation](#installation)
+- [Usage](#usage)
 - [API](#api)
 - [Instance API](#instance-api)
 - [Options](#options)
@@ -16,7 +17,7 @@ A script that interacts with the REST API of [Ackee](https://github.com/electeri
 
 ackee-tracker requires a running [ackee-server](https://github.com/electerious/ackee-server).
 
-## Setup
+## Installation
 
 We recommend installing ackee-tracker using [npm](https://npmjs.com) or [yarn](https://yarnpkg.com).
 
@@ -28,13 +29,42 @@ npm install ackee-tracker
 yarn add ackee-tracker
 ```
 
-Include the JS-file at the end of your `body`…
+## Usage
+
+### Automatically
+
+The easiest way to send data to your Ackee server is to include the script along with the required attributes. Ackee now tracks each page visit automatically.
+
+```html
+<script async src="dist/ackee-tracker.min.js" data-ackee-server="http://example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0"></script>
+```
+
+It's also possible to customize Ackee using the `data-ackee-opts` attribute.
+
+```html
+<script async src="dist/ackee-tracker.min.js" data-ackee-server="http://example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0" data-ackee-opts='{ "ignoreLocalhost": true, "doNotTrack": true }'></script>
+```
+
+### Manually
+
+Include the JS-file at the end of your `body` and start tracking page visits by calling `create` manually.
 
 ```html
 <script src="dist/ackee-tracker.min.js"></script>
+
+<script>
+	ackeeTracker.create({
+		server: 'http://example.com',
+		domainId: 'hd11f820-68a1-11e6-8047-79c0c2d9bce0'
+	}).record()
+</script>
 ```
 
-…or use ackee-tracker as a module:
+### Programmatic
+
+Use ackee-tracker as a module and start tracking page visits by calling `create`.
+
+Example:
 
 ```js
 const ackeeTracker = require('ackee-tracker')
@@ -42,9 +72,30 @@ const ackeeTracker = require('ackee-tracker')
 
 ```js
 import * as ackeeTracker from 'ackee-tracker'
+
+ackeeTracker.create({
+	server: 'http://example.com',
+	domainId: 'hd11f820-68a1-11e6-8047-79c0c2d9bce0'
+}).record()
 ```
 
 ## API
+
+### .detect()
+
+Looks for an element with Ackee attributes, creates an instance and starts tracking.
+
+The function fails silently when it can't find an suitable element.
+
+Example:
+
+```html
+<div hidden data-ackee-server="http://example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0"></div>
+```
+
+```js
+ackeeTracker.detect()
+```
 
 ### .create(server, opts)
 
@@ -66,8 +117,8 @@ const instance = ackeeTracker.create({
 	server: 'http://example.com',
 	domainId: 'hd11f820-68a1-11e6-8047-79c0c2d9bce0'
 }, {
-	ignoreLocalhost: false,
-	doNotTrack: false
+	ignoreLocalhost: true,
+	doNotTrack: true
 })
 ```
 

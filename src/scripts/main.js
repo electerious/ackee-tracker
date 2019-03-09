@@ -1,5 +1,7 @@
 import platform from 'platform'
 
+const isBrowser = typeof window !== 'undefined'
+
 /**
  * Validates options and sets defaults for undefined properties.
  * @param {?Object} opts
@@ -197,6 +199,24 @@ const record = function(server, domainId, attrs, opts) {
 }
 
 /**
+ * Looks for an element with Ackee attributes and executes Ackee with the given attributes.
+ * Fails silently.
+ */
+export const detect = function() {
+
+	const elem = document.querySelector('[data-ackee-domain-id]')
+
+	if (elem == null) return
+
+	const server = elem.getAttribute('data-ackee-server')
+	const domainId = elem.getAttribute('data-ackee-domain-id')
+	const opts = JSON.parse(elem.getAttribute('data-ackee-opts'))
+
+	create({ server, domainId }, opts).record()
+
+}
+
+/**
  * Creates a new instance.
  * @param {Object} server - Server details.
  * @param {?Object} opts
@@ -223,5 +243,16 @@ export const create = function({ server, domainId }, opts) {
 	}
 
 	return instance
+
+}
+
+// Only run Ackee automatically when executed in a browser environment
+if (isBrowser === true) {
+
+	detect()
+
+} else {
+
+	console.warn('Ackee is not executing automatically because you are using it in an environment without a `window` object')
 
 }
