@@ -29,6 +29,13 @@ npm install ackee-tracker
 yarn add ackee-tracker
 ```
 
+It's also possible to load ackee-tracker from your Ackee server. The script is served as `tracker.js`.
+
+```html
+https://example.com/tracker.js
+<script src="https://example.com/tracker.js"></script>
+```
+
 ## Usage
 
 ### Automatically
@@ -36,13 +43,13 @@ yarn add ackee-tracker
 The easiest way to send data to your Ackee server is by including the script along with the required attributes. Ackee will now track each page visit automatically.
 
 ```html
-<script async src="dist/ackee-tracker.min.js" data-ackee-server="http://example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0"></script>
+<script async src="dist/ackee-tracker.min.js" data-ackee-server="https://example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0"></script>
 ```
 
 It's also possible to customize Ackee using the `data-ackee-opts` attribute.
 
 ```html
-<script async src="dist/ackee-tracker.min.js" data-ackee-server="http://example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0" data-ackee-opts='{ "ignoreLocalhost": true, "doNotTrack": true }'></script>
+<script async src="dist/ackee-tracker.min.js" data-ackee-server="https://example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0" data-ackee-opts='{ "ignoreLocalhost": true, "doNotTrack": true }'></script>
 ```
 
 ### Manually
@@ -54,7 +61,7 @@ Include the JS-file at the end of your `body` and start tracking page visits by 
 
 <script>
 	ackeeTracker.create({
-		server: 'http://example.com',
+		server: 'https://example.com',
 		domainId: 'hd11f820-68a1-11e6-8047-79c0c2d9bce0'
 	}).record()
 </script>
@@ -74,7 +81,7 @@ const ackeeTracker = require('ackee-tracker')
 import * as ackeeTracker from 'ackee-tracker'
 
 ackeeTracker.create({
-	server: 'http://example.com',
+	server: 'https://example.com',
 	domainId: 'hd11f820-68a1-11e6-8047-79c0c2d9bce0'
 }).record()
 ```
@@ -90,7 +97,7 @@ The function fails silently when it can't find a suitable element.
 Example:
 
 ```html
-<div hidden data-ackee-server="http://example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0"></div>
+<div hidden data-ackee-server="https://example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0"></div>
 ```
 
 ```js
@@ -107,14 +114,14 @@ Examples:
 
 ```js
 const instance = ackeeTracker.create({
-	server: 'http://example.com',
+	server: 'https://example.com',
 	domainId: 'hd11f820-68a1-11e6-8047-79c0c2d9bce0'
 })
 ```
 
 ```js
 const instance = ackeeTracker.create({
-	server: 'http://example.com',
+	server: 'https://example.com',
 	domainId: 'hd11f820-68a1-11e6-8047-79c0c2d9bce0'
 }, {
 	ignoreLocalhost: true,
