@@ -85,7 +85,7 @@ ackeeTracker.create({
 
 Looks for an element with Ackee attributes, creates an instance and starts tracking.
 
-The function fails silently when it can't find an suitable element.
+The function fails silently when it can't find a suitable element.
 
 Example:
 
