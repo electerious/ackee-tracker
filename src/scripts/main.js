@@ -208,11 +208,11 @@ export const detect = function() {
 
 	if (elem == null) return
 
-	const server = elem.getAttribute('data-ackee-server')
+	const server = elem.getAttribute('data-ackee-server') || ''
 	const domainId = elem.getAttribute('data-ackee-domain-id')
-	const opts = JSON.parse(elem.getAttribute('data-ackee-opts'))
+	const opts = elem.getAttribute('data-ackee-opts') || {}
 
-	create({ server, domainId }, opts).record()
+	create({ server, domainId }, JSON.parse(opts)).record()
 
 }
 
