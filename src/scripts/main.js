@@ -210,7 +210,7 @@ export const detect = function() {
 
 	const server = elem.getAttribute('data-ackee-server') || ''
 	const domainId = elem.getAttribute('data-ackee-domain-id')
-	const opts = elem.getAttribute('data-ackee-opts') || {}
+	const opts = elem.getAttribute('data-ackee-opts') || '{}'
 
 	create({ server, domainId }, JSON.parse(opts)).record()
 
