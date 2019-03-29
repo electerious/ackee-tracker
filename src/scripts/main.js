@@ -15,9 +15,6 @@ const validate = function(opts = {}) {
 	if (opts.ignoreLocalhost !== false) _opts.ignoreLocalhost = true
 	else _opts.ignoreLocalhost = false
 
-	if (opts.doNotTrack !== false) _opts.doNotTrack = true
-	else _opts.doNotTrack = false
-
 	return _opts
 
 }
@@ -30,16 +27,6 @@ const validate = function(opts = {}) {
 const isLocalhost = function(hostname) {
 
 	return hostname === '' || hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1'
-
-}
-
-/**
- * Determines if DNT is enabled.
- * @returns {Boolean} isDoNotTrackEnabled
- */
-const isDoNotTrackEnabled = function() {
-
-	return navigator.doNotTrack === '1'
 
 }
 
@@ -167,10 +154,6 @@ const send = function(method, url, parameters, next) {
  * @returns {?*}
  */
 const record = function(server, domainId, attrs, opts) {
-
-	if (opts.doNotTrack === true && isDoNotTrackEnabled() === true) {
-		return console.warn('Ackee ignores you because doNotTrack is enabled')
-	}
 
 	if (opts.ignoreLocalhost === true && isLocalhost(location.hostname) === true) {
 		return console.warn('Ackee ignores you because you are on localhost')

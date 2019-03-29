@@ -48,7 +48,7 @@ The easiest way to send data to your Ackee server is by including the script alo
 It's also possible to customize Ackee using the `data-ackee-opts` attribute.
 
 ```html
-<script async src="dist/ackee-tracker.min.js" data-ackee-server="https://example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0" data-ackee-opts='{ "ignoreLocalhost": true, "doNotTrack": true }'></script>
+<script async src="dist/ackee-tracker.min.js" data-ackee-server="https://example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0" data-ackee-opts='{ "ignoreLocalhost": true }'></script>
 ```
 
 ### Manually
@@ -123,8 +123,7 @@ const instance = ackeeTracker.create({
 	server: 'https://example.com',
 	domainId: 'hd11f820-68a1-11e6-8047-79c0c2d9bce0'
 }, {
-	ignoreLocalhost: true,
-	doNotTrack: true
+	ignoreLocalhost: true
 })
 ```
 
@@ -182,10 +181,6 @@ The option-object can include the following properties:
 	/*
 	 * Disable tracking when on localhost.
 	 */
-	ignoreLocalhost: true,
-	/*
-	 * Respect do-not-track setting of the user.
-	 */
-	doNotTrack: true
+	ignoreLocalhost: true
 }
 ```
