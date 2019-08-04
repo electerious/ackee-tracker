@@ -62,7 +62,6 @@ export const attributes = function() {
 	return polish({
 		siteLocation: window.location.href,
 		siteReferrer: document.referrer,
-		siteTitle: document.title,
 		siteLanguage: (navigator.language || navigator.userLanguage).substr(0, 2),
 		screenWidth: screen.width,
 		screenHeight: screen.height,
