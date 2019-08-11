@@ -7,7 +7,8 @@
 	<script src="../dist/ackee-tracker.min.js"></script>
 
 	<script>
-		console.log(ackeeTracker.attributes())
+		console.log('Default attributes', ackeeTracker.attributes())
+		console.log('Detailed attributes', ackeeTracker.attributes(true))
 
 		ackeeTracker.create({
 			server: '',

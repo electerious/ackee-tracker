@@ -12,8 +12,11 @@ const validate = function(opts = {}) {
 	// Create new object to avoid changes by reference
 	const _opts = {}
 
-	if (opts.ignoreLocalhost !== false) _opts.ignoreLocalhost = true
-	else _opts.ignoreLocalhost = false
+	// Defaults to true
+	_opts.ignoreLocalhost = opts.ignoreLocalhost !== false
+
+	// Defaults to false
+	_opts.detailed = opts.detailed === true
 
 	return _opts
 
@@ -55,13 +58,17 @@ const polish = function(obj) {
 
 /**
  * Gathers all platform-, screen- and user-related information.
- * @returns {Object} attributes
+ * @param {Boolean} detailed - Include personal data.
+ * @returns {Object} attributes - User-related information.
  */
-export const attributes = function() {
+export const attributes = function(detailed = false) {
 
-	return polish({
+	const defaultData = {
 		siteLocation: window.location.href,
-		siteReferrer: document.referrer,
+		siteReferrer: document.referrer
+	}
+
+	const detailedData = {
 		siteLanguage: (navigator.language || navigator.userLanguage).substr(0, 2),
 		screenWidth: screen.width,
 		screenHeight: screen.height,
@@ -74,6 +81,11 @@ export const attributes = function() {
 		browserVersion: platform.version,
 		browserWidth: document.documentElement.clientWidth || window.outerWidth,
 		browserHeight: document.documentElement.clientHeight || window.outerHeight
+	}
+
+	return polish({
+		...defaultData,
+		...(detailed === true ? detailedData : {})
 	})
 
 }
@@ -212,19 +224,16 @@ export const create = function({ server, domainId }, opts) {
 	// Create a new record on the server and updates the record
 	// very x seconds to track the duration of the visit. Try to use
 	// the default attributes when no custom attributes defined.
-	const _record = (attrs = attributes()) => {
+	const _record = (attrs = attributes(opts.detailed)) => {
 
 		record(server, domainId, attrs, opts)
 
 	}
 
-	// Assign instance to a variable so the instance can be used
-	// elsewhere in the current function
-	const instance = {
+	// Return the instance
+	return {
 		record: _record
 	}
-
-	return instance
 
 }
 

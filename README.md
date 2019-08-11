@@ -123,7 +123,8 @@ const instance = ackeeTracker.create({
 	server: 'https://example.com',
 	domainId: 'hd11f820-68a1-11e6-8047-79c0c2d9bce0'
 }, {
-	ignoreLocalhost: true
+	ignoreLocalhost: true,
+	detailed: false
 })
 ```
 
@@ -140,15 +141,23 @@ Returns:
 
 Gathers and returns all platform-, screen- and user-related information.
 
-Example:
+Examples:
 
 ```js
 const attributes = ackeeTracker.attributes()
 ```
 
+```js
+const attributes = ackeeTracker.attributes(true)
+```
+
+Parameters:
+
+- `detailed` `{Boolean}` Include personal data.
+
 Returns:
 
-- `{Object}` Platform-, screen- and user-related information.
+- `{Object}` User-related information.
 
 ## Instance API
 
@@ -179,8 +188,13 @@ The option-object can include the following properties:
 ```js
 {
 	/*
-	 * Disable tracking when on localhost.
+	 * Enable or disable tracking when on localhost.
 	 */
-	ignoreLocalhost: true
+	ignoreLocalhost: true,
+	/*
+	 * Enable or disable tracking of personal data.
+	 * We recommend to ask the user for permission before turning this option on.
+	 */
+	detailed: false
 }
 ```
