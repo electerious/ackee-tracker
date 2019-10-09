@@ -186,7 +186,7 @@ const record = function(server, domainId, attrs, opts) {
 
 			})
 
-		}, 5000)
+		}, 15000)
 
 	})
 
