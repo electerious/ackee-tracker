@@ -174,7 +174,10 @@ instance.record()
 ```
 
 ```js
-instance.record(ackeeTracker.attributes())
+instance.record({
+	siteLocation: window.location.href,
+	siteReferrer: document.referrer
+})
 ```
 
 Parameters:
