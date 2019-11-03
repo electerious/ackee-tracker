@@ -162,9 +162,10 @@ const send = function(method, url, parameters, next) {
  * @param {String} domainId - Id of the domain.
  * @param {Object} attrs - Attributes that should be transferred to the server.
  * @param {Object} opts
+ * @param {Function} active - Indicates if the record should still update.
  * @returns {?*}
  */
-const record = function(server, domainId, attrs, opts) {
+const record = function(server, domainId, attrs, opts, active) {
 
 	if (opts.ignoreLocalhost === true && isLocalhost(location.hostname) === true) {
 		return console.warn('Ackee ignores you because you are on localhost')
@@ -178,7 +179,12 @@ const record = function(server, domainId, attrs, opts) {
 		const recordId = json.data.id
 
 		// PATCH the record constantly to track the duration of the visit
-		setInterval(() => {
+		const interval = setInterval(() => {
+
+			if (active() === false) {
+				clearInterval(interval)
+				return
+			}
 
 			send('PATCH', endpoint(server, domainId, recordId), null, (err) => {
 
@@ -218,6 +224,8 @@ export const detect = function() {
  */
 export const create = function({ server, domainId }, opts) {
 
+	let globalExecutionId
+
 	// Validate options
 	opts = validate(opts)
 
@@ -226,7 +234,11 @@ export const create = function({ server, domainId }, opts) {
 	// the default attributes when no custom attributes defined.
 	const _record = (attrs = attributes(opts.detailed)) => {
 
-		record(server, domainId, attrs, opts)
+		// Stop updating old records when calling the record function
+		const localExecutionId = globalExecutionId = Date.now()
+		const active = () => localExecutionId === globalExecutionId
+
+		record(server, domainId, attrs, opts, active)
 
 	}
 

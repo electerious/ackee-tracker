@@ -165,7 +165,7 @@ Each ackeeTracker instance is an object with functions you can use to track your
 
 ### .record(attributes)
 
-Creates a new record on the server and updates the record constantly to track the duration of the visit.
+Creates a new record on the server and updates the record constantly to track the duration of the visit. The update of old records will be canceled when you call this function once again.
 
 Examples:
 
