@@ -12,6 +12,7 @@ A script that interacts with the REST API of [Ackee](https://github.com/electeri
 - [API](#api)
 - [Instance API](#instance-api)
 - [Options](#options)
+- [Related](#related)
 
 ## Requirements
 
@@ -201,3 +202,8 @@ The option-object can include the following properties:
 	detailed: false
 }
 ```
+
+## Related
+
+- [gatsby-plugin-ackee-tracker](https://github.com/Burnsy/gatsby-plugin-ackee-tracker) - Gatsby plugin for Ackee
+- [use-ackee](https://github.com/electerious/use-ackee) - Use Ackee in React
