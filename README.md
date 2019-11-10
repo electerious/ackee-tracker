@@ -205,5 +205,6 @@ The option-object can include the following properties:
 
 ## Related
 
+- [Ackee](https://github.com/electerious/Ackee) - Self-hosted analytics tool
 - [gatsby-plugin-ackee-tracker](https://github.com/Burnsy/gatsby-plugin-ackee-tracker) - Gatsby plugin for Ackee
 - [use-ackee](https://github.com/electerious/use-ackee) - Use Ackee in React
