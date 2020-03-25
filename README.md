@@ -207,4 +207,6 @@ The option-object can include the following properties:
 
 - [Ackee](https://github.com/electerious/Ackee) - Self-hosted analytics tool
 - [gatsby-plugin-ackee-tracker](https://github.com/Burnsy/gatsby-plugin-ackee-tracker) - Gatsby plugin for Ackee
+- [Soapberry](https://wordpress.org/plugins/soapberry/) - WordPress plugin for Ackee
 - [use-ackee](https://github.com/electerious/use-ackee) - Use Ackee in React
+- [nuxt-ackee](https://github.com/bdrtsky/nuxt-ackee) - Nuxt.js module for Ackee
