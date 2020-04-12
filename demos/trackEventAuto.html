@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+
+<meta charset="utf-8">
+<title>ackee-tracker Demo</title>
+
+<script 
+	async 
+	src="../dist/ackee-tracker.min.js" 
+	data-ackee-server=""
+	data-ackee-domain-id="" 
+	data-ackee-opts='{ "ignoreLocalhost": false }'>
+</script>
+
+<body>
+	<button id="trackButton">Track this</button>
+</body>
+
+<script>
+	const button = document.getElementById('trackButton');
+	button.addEventListener('click', () => {
+		// When using Ackee on auto mode, Ackee exposes a method trackAckeeEvent that you can use to track event
+		trackAckeeEvent({ category: 'button', action: 'click', label: 'Click on track button' });
+	})
+</script>
+
+</html>

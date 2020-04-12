@@ -91,13 +91,13 @@ export const attributes = function(detailed = false) {
 }
 
 /**
- * Construct a URL from the given parameters.
+ * Construct an events URL from the given parameters.
  * @param {String} server - URL to ackee-server. Must not end with a slash.
  * @param {String} domainId - Domain id.
  * @param {?String} recordId - Record id.
  * @returns {String} url
  */
-const endpoint = function(server, domainId, recordId) {
+const recordsEndpoint = function(server, domainId, recordId) {
 
 	const defined = (_) => _ != null
 
@@ -107,6 +107,27 @@ const endpoint = function(server, domainId, recordId) {
 		domainId,
 		'records',
 		recordId
+	]
+
+	return url.filter(defined).join('/')
+
+}
+
+/**
+ * Construct a domains URL from the given parameters.
+ * @param {String} server - URL to ackee-server. Must not end with a slash.
+ * @param {String} domainId - Domain id.
+ * @returns {String} url
+ */
+const eventsEndpoint = function(server, domainId) {
+
+	const defined = (_) => _ != null
+
+	const url = [
+		server,
+		'domains',
+		domainId,
+		'events'
 	]
 
 	return url.filter(defined).join('/')
@@ -155,6 +176,16 @@ const send = function(method, url, parameters, next) {
 
 }
 
+const event = function(server, domainId, attrs, opts) {
+	if (opts.ignoreLocalhost === true && isLocalhost(location.hostname) === true) {
+		return console.warn('Ackee ignores you because you are on localhost')
+	}
+
+	send('POST', eventsEndpoint(server, domainId), attrs, (err) => {
+		if (err != null) return console.error(err)
+	})
+}
+
 /**
  * Creates a new record on the server and updates the record
  * every x seconds to track the duration of the visit.
@@ -172,7 +203,7 @@ const record = function(server, domainId, attrs, opts, active) {
 	}
 
 	// Send initial request to server. This will create a new record.
-	send('POST', endpoint(server, domainId), attrs, (err, json) => {
+	send('POST', recordsEndpoint(server, domainId), attrs, (err, json) => {
 
 		if (err != null) return console.error(err)
 
@@ -186,7 +217,7 @@ const record = function(server, domainId, attrs, opts, active) {
 				return
 			}
 
-			send('PATCH', endpoint(server, domainId, recordId), null, (err) => {
+			send('PATCH', recordsEndpoint(server, domainId, recordId), null, (err) => {
 
 				if (err != null) return console.error(err)
 
@@ -242,9 +273,16 @@ export const create = function({ server, domainId }, opts) {
 
 	}
 
+	const _event = (attrs) => {
+		event(server, domainId, attrs, opts)
+	}
+
+	window.trackAckeeEvent = _event;
+
 	// Return the instance
 	return {
-		record: _record
+		record: _record,
+		event: _event
 	}
 
 }
