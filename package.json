@@ -27,7 +27,7 @@
     "src"
   ],
   "devDependencies": {
-    "rosid-handler-js": "^12.2.1"
+    "rosid-handler-js": "^13.0.0"
   },
   "dependencies": {
     "platform": "^1.3.5"
