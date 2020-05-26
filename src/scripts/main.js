@@ -229,9 +229,9 @@ export const create = function({ server, domainId }, opts) {
 	// Validate options
 	opts = validate(opts)
 
-	// Create a new record on the server and updates the record
-	// very x seconds to track the duration of the visit. Try to use
-	// the default attributes when no custom attributes defined.
+	// Creates a new record on the server and updates the record
+	// very x seconds to track the duration of the visit. Tries to use
+	// the default attributes when there're no custom attributes defined.
 	const _record = (attrs = attributes(opts.detailed)) => {
 
 		// Stop updating old records when calling the record function
