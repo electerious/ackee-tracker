@@ -234,11 +234,21 @@ export const create = function({ server, domainId }, opts) {
 	// the default attributes when there're no custom attributes defined.
 	const _record = (attrs = attributes(opts.detailed)) => {
 
-		// Stop updating old records when calling the record function
+		// Manually stop updating
+		let isStopped = false
+
+		// Automatically stop updating when calling the record function, again
 		const localExecutionId = globalExecutionId = Date.now()
-		const active = () => localExecutionId === globalExecutionId
+
+		// Helper function that checks if the record should still update
+		const active = () => isStopped === false && localExecutionId === globalExecutionId
+
+		// Call this function to stop updating the record
+		const stop = () => { isStopped = true }
 
 		record(server, domainId, attrs, opts, active)
+
+		return stop
 
 	}
 

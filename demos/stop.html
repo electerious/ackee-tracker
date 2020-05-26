@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+
+	<meta charset="utf-8">
+	<title>ackee-tracker Demo</title>
+
+	<script src="../dist/ackee-tracker.min.js"></script>
+
+	<script>
+		const stop = ackeeTracker.create({
+			server: '',
+			domainId: ''
+		}, {
+			ignoreLocalhost: false
+		}).record()
+
+		setTimeout(stop, 5000)
+	</script>
+
+</html>

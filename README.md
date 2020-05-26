@@ -181,9 +181,22 @@ instance.record({
 })
 ```
 
+```js
+const stop = instance.record()
+
+// Manually stop updating the visit duration. The returned function should be used in
+// single-page applications. Call the function when the user navigates to a new page
+// before creating a new record.
+stop()
+```
+
 Parameters:
 
 - `attributes` `{?Object}` Attributes that should be transferred to the server. Will be `ackeeTracker.attributes()` unless specified otherwise.
+
+Returns:
+
+- `{Function}()` Call the returned function to stop updating the visit duration of the created record.
 
 ## Options
 
