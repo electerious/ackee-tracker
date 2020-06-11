@@ -34,29 +34,6 @@ const isLocalhost = function(hostname) {
 }
 
 /**
- * Iterates over an object to clean it up.
- * @param {Object} obj - Dirty object with empty strings and values.
- * @returns {Object} obj - Clean object without empty strings and values.
- */
-const polish = function(obj) {
-
-	return Object.keys(obj).reduce((acc, key) => {
-
-		let value = obj[key]
-
-		value = typeof value === 'string' ? value.trim() : value
-		value = value == null ? null : value
-		value = value === '' ? null : value
-
-		acc[key] = value
-
-		return acc
-
-	}, {})
-
-}
-
-/**
  * Gathers all platform-, screen- and user-related information.
  * @param {Boolean} detailed - Include personal data.
  * @returns {Object} attributes - User-related information.
@@ -83,10 +60,10 @@ export const attributes = function(detailed = false) {
 		browserHeight: document.documentElement.clientHeight || window.outerHeight
 	}
 
-	return polish({
+	return {
 		...defaultData,
 		...(detailed === true ? detailedData : {})
-	})
+	}
 
 }
 
