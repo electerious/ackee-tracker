@@ -171,31 +171,43 @@ const record = function(server, domainId, attrs, opts, active) {
 		return console.warn('Ackee ignores you because you are on localhost')
 	}
 
-	// Send initial request to server. This will create a new record.
-	send('POST', endpoint(server, domainId), attrs, (err, json) => {
+	function start() {
+		// Send initial request to server. This will create a new record.
+		send('POST', endpoint(server, domainId), attrs, (err, json) => {
 
-		if (err != null) return console.error(err)
+			if (err != null) return console.error(err)
 
-		const recordId = json.data.id
+			const recordId = json.data.id
 
-		// PATCH the record constantly to track the duration of the visit
-		const interval = setInterval(() => {
+			// PATCH the record constantly to track the duration of the visit
+			const interval = setInterval(() => {
 
-			if (active() === false) {
-				clearInterval(interval)
-				return
-			}
+				if (active() === false) {
+					clearInterval(interval)
+					return
+				}
 
-			send('PATCH', endpoint(server, domainId, recordId), null, (err) => {
+				// Update "siteLocation" and restart recording if needed.
+				if (attrs.siteLocation !== window.location.href) {
+					clearInterval(interval)
 
-				if (err != null) return console.error(err)
+					attrs.siteLocation = window.location.href
+					start()
+					return
+				}
 
-			})
+				send('PATCH', endpoint(server, domainId, recordId), null, (err) => {
 
-		}, 15000)
+					if (err != null) return console.error(err)
 
-	})
+				})
 
+			}, 15000)
+
+		})
+	}
+
+	start()
 }
 
 /**
