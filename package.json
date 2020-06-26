@@ -6,6 +6,7 @@
   ],
   "description": "Transfer data to Ackee",
   "main": "dist/ackee-tracker.min.js",
+  "types": "index.d.ts",
   "keywords": [
     "ackee",
     "tracking",
@@ -24,7 +25,8 @@
   },
   "files": [
     "dist",
-    "src"
+    "src",
+    "index.d.ts"
   ],
   "devDependencies": {
     "rosid-handler-js": "^13.0.0"

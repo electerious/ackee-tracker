@@ -260,12 +260,6 @@ export const create = function({ server, domainId }, opts) {
 }
 
 // Only run Ackee automatically when executed in a browser environment
-if (isBrowser === true) {
-
+if (isBrowser) {
 	detect()
-
-} else {
-
-	console.warn('Ackee is not executing automatically because you are using it in an environment without a `window` object')
-
 }
