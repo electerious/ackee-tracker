@@ -38,7 +38,7 @@ It's also possible to load ackee-tracker from your Ackee server. The script is s
 
 ## Usage
 
-### Automatic
+### Automatically
 
 The easiest way to send data to your Ackee server is by including the script along with the required attributes. Ackee will now track each page visit automatically.
 
