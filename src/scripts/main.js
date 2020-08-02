@@ -76,7 +76,7 @@ const endpoint = function(server) {
 
 	const hasTrailingSlash = server.substr(-1) === '/'
 
-	return server + (hasTrailingSlash === true ? '' : '/') + 'graphql'
+	return server + (hasTrailingSlash === true ? '' : '/') + 'api'
 
 }
 
