@@ -7,7 +7,7 @@ const isBrowser = typeof window !== 'undefined'
  * @param {?Object} opts
  * @returns {Object} opts - Validated options.
  */
-const validate = function(opts = {}) {
+const validate = function (opts = {}) {
 
 	// Create new object to avoid changes by reference
 	const _opts = {}
@@ -27,7 +27,7 @@ const validate = function(opts = {}) {
  * @param {String} hostname - Hostname that should be tested.
  * @returns {Boolean} isLocalhost
  */
-const isLocalhost = function(hostname) {
+const isLocalhost = function (hostname) {
 
 	return hostname === '' || hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1'
 
@@ -38,7 +38,7 @@ const isLocalhost = function(hostname) {
  * @param {Object} obj - Dirty object with empty strings and values.
  * @returns {Object} obj - Clean object without empty strings and values.
  */
-const polish = function(obj) {
+const polish = function (obj) {
 
 	return Object.keys(obj).reduce((acc, key) => {
 
@@ -61,7 +61,7 @@ const polish = function(obj) {
  * @param {Boolean} detailed - Include personal data.
  * @returns {Object} attributes - User-related information.
  */
-export const attributes = function(detailed = false) {
+export const attributes = function (detailed = false) {
 
 	const defaultData = {
 		siteLocation: window.location.href,
@@ -97,7 +97,7 @@ export const attributes = function(detailed = false) {
  * @param {?String} recordId - Record id.
  * @returns {String} url
  */
-const endpoint = function(server, domainId, recordId) {
+const endpoint = function (server, domainId, recordId) {
 
 	const defined = (_) => _ != null
 
@@ -122,7 +122,7 @@ const endpoint = function(server, domainId, recordId) {
  * @param {?Object} parameters - Parameters that should be transferred to the server.
  * @param {Function} next - The callback that handles the response. Receives the following properties: err, json.
  */
-const send = function(method, url, parameters, next) {
+const send = function (method, url, parameters, next) {
 
 	const xhr = new XMLHttpRequest()
 
@@ -162,47 +162,76 @@ const send = function(method, url, parameters, next) {
  * @param {String} domainId - Id of the domain.
  * @param {Object} attrs - Attributes that should be transferred to the server.
  * @param {Object} opts
+ * @param {String} opts.recordId
  * @param {Function} active - Indicates if the record should still update.
  * @returns {?*}
  */
-const record = function(server, domainId, attrs, opts, active) {
+const record = function (server, domainId, attrs, opts, active) {
 
 	if (opts.ignoreLocalhost === true && isLocalhost(location.hostname) === true) {
 		return console.warn('Ackee ignores you because you are on localhost')
 	}
 
-	// Send initial request to server. This will create a new record.
-	send('POST', endpoint(server, domainId), attrs, (err, json) => {
-
-		if (err != null) return console.error(err)
-
-		const recordId = json.data.id
-
+	function recordInterval(recordId) {
 		// PATCH the record constantly to track the duration of the visit
 		const interval = setInterval(() => {
-
 			if (active() === false) {
 				clearInterval(interval)
 				return
 			}
 
 			send('PATCH', endpoint(server, domainId, recordId), null, (err) => {
-
-				if (err != null) return console.error(err)
-
+				if (err !== null) {
+					return console.error(err)
+				}
 			})
-
 		}, 15000)
+	}
 
-	})
+	if (opts.recordId) {
+		recordInterval(opts.recordId)
+	} else {
+		createRecord(server, domainId, attrs, function (err, recordId) {
+			if (err) {
+				return console.error(err)
+			}
+			recordInterval(recordId)
+		})
+	}
+}
 
+// Send initial request to server. This will create a new record.
+const createRecord = function (server, domainId, attrs, callback) {
+	if (callback) {
+		send('POST', endpoint(server, domainId), attrs, (err, json) => {
+			if (err !== null) {
+				return callback(err)
+			}
+
+			const recordId = json.data.id
+			return callback(null, recordId)
+		})
+	} else if (typeof Promise === 'function') {
+		return new Promise((resolve, reject) => {
+			send('POST', endpoint(server, domainId), attrs, (err, json) => {
+				if (err !== null) {
+					return reject(err)
+				}
+
+				const recordId = json.data.id
+				return resolve(recordId)
+			})
+		})
+	} else {
+		throw new Error('Callback is required when Promises are not supported')
+	}
 }
 
 /**
  * Looks for an element with Ackee attributes and executes Ackee with the given attributes.
  * Fails silently.
  */
-export const detect = function() {
+export const detect = function () {
 
 	const elem = document.querySelector('[data-ackee-domain-id]')
 
@@ -222,39 +251,48 @@ export const detect = function() {
  * @param {?Object} opts
  * @returns {Object} instance
  */
-export const create = function({ server, domainId }, opts) {
+export const create = function ({ server, domainId }, opts) {
 
 	let globalExecutionId
 
 	// Validate options
 	opts = validate(opts)
 
-	// Creates a new record on the server and updates the record
-	// very x seconds to track the duration of the visit. Tries to use
-	// the default attributes when there're no custom attributes defined.
-	const _record = (attrs = attributes(opts.detailed)) => {
+	function makeRecordMethod(opts) {
+		// Creates a new record on the server and updates the record
+		// very x seconds to track the duration of the visit. Tries to use
+		// the default attributes when there're no custom attributes defined.
+		return (attrs = attributes(opts.detailed)) => {
 
-		// Manually stop updating
-		let isStopped = false
+			// Manually stop updating
+			let isStopped = false
 
-		// Automatically stop updating when calling the record function, again
-		const localExecutionId = globalExecutionId = Date.now()
+			// Automatically stop updating when calling the record function, again
+			const localExecutionId = globalExecutionId = Date.now()
 
-		// Helper function that checks if the record should still update
-		const active = () => isStopped === false && localExecutionId === globalExecutionId
+			// Helper function that checks if the record should still update
+			const active = () => isStopped === false && localExecutionId === globalExecutionId
 
-		// Call this function to stop updating the record
-		const stop = () => { isStopped = true }
+			// Call this function to stop updating the record
+			const stop = () => { isStopped = true }
 
-		record(server, domainId, attrs, opts, active)
+			record(server, domainId, attrs, opts, active)
 
-		return stop
+			return stop
+		}
+	}
 
+	const recordWithId = (recordId, attrs) => {
+		const optsWithId = Object.assign({}, opts)
+		optsWithId.recordId = recordId
+		return makeRecordMethod(optsWithId)(attrs)
 	}
 
 	// Return the instance
 	return {
-		record: _record
+		record: makeRecordMethod(opts),
+		recordWithId: recordWithId,
+		createRecord: createRecord.bind(null, server, domainId)
 	}
 
 }
