@@ -188,7 +188,7 @@ instance.record({
 ```
 
 ```js
-const stop = instance.record()
+const { stop } = instance.record()
 
 // Manually stop updating the visit duration. The returned function should be used in
 // single-page applications. Call the function when the user navigates to a new page
@@ -202,7 +202,7 @@ Parameters:
 
 Returns:
 
-- `{Function}()` Call the returned function to stop updating the visit duration of the created record.
+- `{Object}` Object with a `stop` function. Call the returned function to stop updating the visit duration of the created record.
 
 ## Options
 

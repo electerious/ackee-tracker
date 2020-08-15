@@ -248,7 +248,9 @@ export const create = function({ server, domainId }, opts) {
 
 		record(server, domainId, attrs, opts, active)
 
-		return stop
+		return {
+			stop
+		}
 
 	}
 
