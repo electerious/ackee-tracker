@@ -154,13 +154,13 @@ const record = function(server, domainId, attrs, opts, active) {
 		}
 	`
 
-	const updateVariables = {
+	const createVariables = {
 		domainId,
 		input: attrs
 	}
 
 	// Send initial request to server. This will create a new record.
-	send(url, createQuery, updateVariables, (err, json) => {
+	send(url, createQuery, createVariables, (err, json) => {
 
 		if (err != null) return console.error(err)
 
