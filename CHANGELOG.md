@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Support the GraphQL API of Ackee v2
+
+### Changed
+
+- Dropped support for older Ackee versions (< 2.0)
+- `.record` now returns an object with a stop-function instead of returning the stop-function directly
+
 ## [3.3.0] - 2020-05-26
 
 ### Added

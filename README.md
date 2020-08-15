@@ -42,6 +42,8 @@ It's also possible to load ackee-tracker from your Ackee server. The script is s
 
 The easiest way to send data to your Ackee server is by including the script along with the required attributes. Ackee will now track each page visit automatically.
 
+This approach is perfect for static sites. It tracks a visit whenever a user visits the site or navigates to a new page. Websites with client-side routing however should consider to use any of the other approaches as this one would only track the initial page.
+
 ```html
 <script async src="dist/ackee-tracker.min.js" data-ackee-server="https://example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0"></script>
 ```
@@ -55,6 +57,8 @@ It's also possible to customize Ackee using the `data-ackee-opts` attribute.
 ### Manually
 
 Include the JS-file at the end of your `body` and start tracking page visits by calling `create` manually.
+
+This approach is perfect for sites without a build system. It gives you more control than the automatic solution and allows you to use `ackee-tracker` without a package manager or JS bundler.
 
 ```html
 <script src="dist/ackee-tracker.min.js"></script>
@@ -70,6 +74,8 @@ Include the JS-file at the end of your `body` and start tracking page visits by 
 ### Programmatic
 
 Use ackee-tracker as a module and start tracking page visits by calling `create`.
+
+This approach is perfect if your site uses client-side routing or changes content without reloading the site. It allows you to call Ackee whenever you need.
 
 Example:
 
@@ -182,7 +188,7 @@ instance.record({
 ```
 
 ```js
-const stop = instance.record()
+const { stop } = instance.record()
 
 // Manually stop updating the visit duration. The returned function should be used in
 // single-page applications. Call the function when the user navigates to a new page
@@ -196,7 +202,7 @@ Parameters:
 
 Returns:
 
-- `{Function}()` Call the returned function to stop updating the visit duration of the created record.
+- `{Object}` Object with a `stop` function. Call the returned function to stop updating the visit duration of the created record.
 
 ## Options
 

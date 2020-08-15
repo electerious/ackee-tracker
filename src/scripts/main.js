@@ -34,29 +34,6 @@ const isLocalhost = function(hostname) {
 }
 
 /**
- * Iterates over an object to clean it up.
- * @param {Object} obj - Dirty object with empty strings and values.
- * @returns {Object} obj - Clean object without empty strings and values.
- */
-const polish = function(obj) {
-
-	return Object.keys(obj).reduce((acc, key) => {
-
-		let value = obj[key]
-
-		value = typeof value === 'string' ? value.trim() : value
-		value = value == null ? null : value
-		value = value === '' ? null : value
-
-		acc[key] = value
-
-		return acc
-
-	}, {})
-
-}
-
-/**
  * Gathers all platform-, screen- and user-related information.
  * @param {Boolean} detailed - Include personal data.
  * @returns {Object} attributes - User-related information.
@@ -83,33 +60,23 @@ export const attributes = function(detailed = false) {
 		browserHeight: document.documentElement.clientHeight || window.outerHeight
 	}
 
-	return polish({
+	return {
 		...defaultData,
 		...(detailed === true ? detailedData : {})
-	})
+	}
 
 }
 
 /**
- * Construct a URL from the given parameters.
- * @param {String} server - URL to ackee-server. Must not end with a slash.
- * @param {String} domainId - Domain id.
- * @param {?String} recordId - Record id.
- * @returns {String} url
+ * Construct URL to the GraphQL endpoint of Ackee.
+ * @param {String} server - URL of the Ackee server.
+ * @returns {String} endpoint - URL to the GraphQL endpoint of the Ackee server.
  */
-const endpoint = function(server, domainId, recordId) {
+const endpoint = function(server) {
 
-	const defined = (_) => _ != null
+	const hasTrailingSlash = server.substr(-1) === '/'
 
-	const url = [
-		server,
-		'domains',
-		domainId,
-		'records',
-		recordId
-	]
-
-	return url.filter(defined).join('/')
+	return server + (hasTrailingSlash === true ? '' : '/') + 'api'
 
 }
 
@@ -117,16 +84,16 @@ const endpoint = function(server, domainId, recordId) {
  * Sends a request to a specified URL.
  * Won't catch all errors as some are already logged by the browser.
  * In this case the callback won't fire.
- * @param {String} method - Type of request.
- * @param {String} url - Server (file) location.
- * @param {?Object} parameters - Parameters that should be transferred to the server.
+ * @param {String} url - URL to the GraphQL endpoint of the Ackee server.
+ * @param {String} query - GraphQL query.
+ * @param {?Object} variables - Variables for the GraphQL query.
  * @param {Function} next - The callback that handles the response. Receives the following properties: err, json.
  */
-const send = function(method, url, parameters, next) {
+const send = function(url, query, variables, next) {
 
 	const xhr = new XMLHttpRequest()
 
-	xhr.open(method, url)
+	xhr.open('POST', url)
 
 	xhr.onload = () => {
 
@@ -140,6 +107,10 @@ const send = function(method, url, parameters, next) {
 				return next(new Error('Failed to parse response from server'))
 			}
 
+			if (json.errors != null) {
+				return next(new Error(json.errors[0].message))
+			}
+
 			return next(null, json)
 
 		} else {
@@ -151,7 +122,7 @@ const send = function(method, url, parameters, next) {
 	}
 
 	xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
-	xhr.send(parameters == null ? null : JSON.stringify(parameters))
+	xhr.send(JSON.stringify({ query, variables }))
 
 }
 
@@ -171,12 +142,29 @@ const record = function(server, domainId, attrs, opts, active) {
 		return console.warn('Ackee ignores you because you are on localhost')
 	}
 
+	const url = endpoint(server)
+
+	const createQuery = `
+		mutation createRecord($domainId: ID!, $input: CreateRecordInput!) {
+			createRecord(domainId: $domainId, input: $input) {
+				payload {
+					id
+				}
+			}
+		}
+	`
+
+	const createVariables = {
+		domainId,
+		input: attrs
+	}
+
 	// Send initial request to server. This will create a new record.
-	send('POST', endpoint(server, domainId), attrs, (err, json) => {
+	send(url, createQuery, createVariables, (err, json) => {
 
 		if (err != null) return console.error(err)
 
-		const recordId = json.data.id
+		const recordId = json.data.createRecord.payload.id
 
 		// PATCH the record constantly to track the duration of the visit
 		const interval = setInterval(() => {
@@ -186,7 +174,19 @@ const record = function(server, domainId, attrs, opts, active) {
 				return
 			}
 
-			send('PATCH', endpoint(server, domainId, recordId), null, (err) => {
+			const updateQuery = `
+				mutation updateRecord($id: ID!) {
+					updateRecord(id: $id) {
+						success
+					}
+				}
+			`
+
+			const updateVariables = {
+				id: recordId
+			}
+
+			send(url, updateQuery, updateVariables, (err) => {
 
 				if (err != null) return console.error(err)
 
@@ -248,7 +248,9 @@ export const create = function({ server, domainId }, opts) {
 
 		record(server, domainId, attrs, opts, active)
 
-		return stop
+		return {
+			stop
+		}
 
 	}
 
