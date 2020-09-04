@@ -1,24 +1,20 @@
+<div align="center">
+
+<img src="https://s.electerious.com/images/ackee-tracker/icon.png" title="ackee-tracker" alt="ackee-tracker logo" width="128">
+
 # ackee-tracker
 
-[![Dependencies](https://david-dm.org/electerious/ackee-tracker.svg)](https://david-dm.org/electerious/ackee-tracker#info=dependencies)
+[![Dependencies](https://david-dm.org/electerious/ackee-tracker.svg)](https://david-dm.org/electerious/ackee-tracker#info=dependencies) [![Donate via PayPal](https://img.shields.io/badge/paypal-donate-009cde.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CYKBESW577YWE)
 
-A script that interacts with the REST API of [Ackee](https://github.com/electerious/Ackee). Should be used to feed your server with data from your visitors.
+A script that interacts with the API of [Ackee](https://github.com/electerious/Ackee). Should be included on your site to track data.
 
-## Contents
+<br/>
 
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Usage](#usage)
-- [API](#api)
-- [Instance API](#instance-api)
-- [Options](#options)
-- [Related](#related)
+![Ackee tracker code](https://s.electerious.com/images/ackee-tracker/readme.png)
 
-## Requirements
+</div>
 
-ackee-tracker requires a running [Ackee server](https://github.com/electerious/Ackee).
-
-## Installation
+## 🚀 Installation
 
 We recommend installing ackee-tracker using [npm](https://npmjs.com) or [yarn](https://yarnpkg.com).
 
@@ -36,7 +32,11 @@ It's also possible to load ackee-tracker from your Ackee server. The script is s
 <script src="https://example.com/tracker.js"></script>
 ```
 
-## Usage
+## 🤗 Usage
+
+- [Automatically](#automatically) - Via script tag
+- [Manually](#manually) - Via script tag and code
+- [Programmatic](#programmatic) - Via module
 
 ### Automatically
 
@@ -92,7 +92,7 @@ ackeeTracker.create({
 }).record()
 ```
 
-## API
+## ⚙️ API
 
 ### .detect()
 
@@ -166,7 +166,7 @@ Returns:
 
 - `{Object}` User-related information.
 
-## Instance API
+## ⚙️ Instance API
 
 Each ackeeTracker instance is an object with functions you can use to track your visitor.
 
@@ -204,7 +204,7 @@ Returns:
 
 - `{Object}` Object with a `stop` function. Call the returned function to stop updating the visit duration of the created record.
 
-## Options
+## 🔧 Options
 
 The option-object can include the following properties:
 
@@ -222,10 +222,15 @@ The option-object can include the following properties:
 }
 ```
 
-## Related
+## Miscellaneous
+
+### Related
 
 - [Ackee](https://github.com/electerious/Ackee) - Self-hosted analytics tool
 - [gatsby-plugin-ackee-tracker](https://github.com/Burnsy/gatsby-plugin-ackee-tracker) - Gatsby plugin for Ackee
 - [Soapberry](https://wordpress.org/plugins/soapberry/) - WordPress plugin for Ackee
+- [Ackee-PHP](https://github.com/BrookeDot/ackee-php) - A PHP Class for Ackee
 - [use-ackee](https://github.com/electerious/use-ackee) - Use Ackee in React
 - [nuxt-ackee](https://github.com/bdrtsky/nuxt-ackee) - Nuxt.js module for Ackee
+- [django-ackee-middleware](https://github.com/suda/django-ackee-middleware) - Django middleware for Ackee
+- [gridsome-plugin-ackee](https://github.com/DenzoNL/gridsome-plugin-ackee) - Gridsome plugin for Ackee
