@@ -266,8 +266,4 @@ if (isBrowser === true) {
 
 	detect()
 
-} else {
-
-	console.warn('Ackee is not executing automatically because you are using it in an environment without a `window` object')
-
 }
