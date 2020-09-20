@@ -224,13 +224,15 @@ The option-object can include the following properties:
 
 ## Miscellaneous
 
-### Related
+### Donate
 
-- [Ackee](https://github.com/electerious/Ackee) - Self-hosted analytics tool
-- [gatsby-plugin-ackee-tracker](https://github.com/Burnsy/gatsby-plugin-ackee-tracker) - Gatsby plugin for Ackee
-- [Soapberry](https://wordpress.org/plugins/soapberry/) - WordPress plugin for Ackee
-- [Ackee-PHP](https://github.com/BrookeDot/ackee-php) - A PHP Class for Ackee
-- [use-ackee](https://github.com/electerious/use-ackee) - Use Ackee in React
-- [nuxt-ackee](https://github.com/bdrtsky/nuxt-ackee) - Nuxt.js module for Ackee
-- [django-ackee-middleware](https://github.com/suda/django-ackee-middleware) - Django middleware for Ackee
-- [gridsome-plugin-ackee](https://github.com/DenzoNL/gridsome-plugin-ackee) - Gridsome plugin for Ackee
+I am working hard on continuously developing and maintaining Ackee. Please consider making a donation to keep the project going strong and me motivated.
+
+- [Become a GitHub sponsor](https://github.com/sponsors/electerious)
+- [Donate via PayPal](https://paypal.me/electerious)
+- [Buy me a coffee](https://www.buymeacoffee.com/electerious)
+
+### Links
+
+- [Follow Ackee on Twitter](https://twitter.com/getackee)
+- [Vote for Ackee on ProductHunt](https://www.producthunt.com/posts/ackee)
