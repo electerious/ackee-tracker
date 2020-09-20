@@ -138,7 +138,7 @@ const instance = ackeeTracker.create({
 Parameters:
 
 - `server` `{Object}` An object that contains details about your [Ackee](https://github.com/electerious/Ackee) installation. The `server` property must not end with a slash.
-- `opts` `{?Object}` An object of [options](#options).
+- `opts` `{?Object}` An object of [options](#-options).
 
 Returns:
 
