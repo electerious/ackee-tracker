@@ -142,6 +142,10 @@ const record = function(server, domainId, attrs, opts, active) {
 		return console.warn('Ackee ignores you because you are on localhost')
 	}
 
+	if (document.cookie.indexOf('ackee_login=1') >= 0) {
+		return console.warn('Ackee ignores you because you are logged in')
+	}
+
 	const url = endpoint(server)
 
 	const createQuery = `
