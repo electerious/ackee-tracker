@@ -134,6 +134,7 @@ const send = function(url, query, variables, next) {
 	}
 
 	xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+	xhr.withCredentials = true
 	xhr.send(JSON.stringify({ query, variables }))
 
 }
@@ -154,13 +155,8 @@ const record = function(server, domainId, attrs, opts, active) {
 		return console.warn('Ackee ignores you because you are on localhost')
 	}
 
-<<<<<<< HEAD
-	if (document.cookie.indexOf('ackee_login=1') >= 0) {
-		return console.warn('Ackee ignores you because you are logged in')
-=======
 	if (isBot(navigator.userAgent) === true) {
 		return console.warn('Ackee ignores you because you are a bot')
->>>>>>> develop
 	}
 
 	const url = endpoint(server)
