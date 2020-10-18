@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+### New
+
+- Ignore bots (#25, #7, thanks @yehudab)
+
 ### Changed
 
 - Recommend to use the script served by your Ackee installation (#23)
