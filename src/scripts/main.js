@@ -34,6 +34,17 @@ const isLocalhost = function(hostname) {
 }
 
 /**
+ * Determines if user agent is a bot. Apprach is to get most bots, assuming other bots don't run JS anyhow
+ * @param {String} useragent - User agent that should be tested.
+ * @returns {Boolean} isBot
+ */
+const isBot = function(useragent) {
+
+	return /bot|crawler|spider|crawling/i.test(useragent)
+
+}
+
+/**
  * Gathers all platform-, screen- and user-related information.
  * @param {Boolean} detailed - Include personal data.
  * @returns {Object} attributes - User-related information.
@@ -140,6 +151,10 @@ const record = function(server, domainId, attrs, opts, active) {
 
 	if (opts.ignoreLocalhost === true && isLocalhost(location.hostname) === true) {
 		return console.warn('Ackee ignores you because you are on localhost')
+	}
+
+	if (isBot(navigator.userAgent) === true) {
+		return console.warn('Ackee ignores you because you are a bot')
 	}
 
 	const url = endpoint(server)
