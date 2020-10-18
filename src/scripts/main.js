@@ -34,13 +34,14 @@ const isLocalhost = function(hostname) {
 }
 
 /**
- * Determines if user agent is a bot. Apprach is to get most bots, assuming other bots don't run JS anyhow
- * @param {String} useragent - User agent that should be tested.
+ * Determines if user agent is a bot. Approach is to get most bots, assuming other bots don't run JS.
+ * Source: https://stackoverflow.com/questions/20084513/detect-search-crawlers-via-javascript/20084661
+ * @param {String} userAgent - User agent that should be tested.
  * @returns {Boolean} isBot
  */
-const isBot = function(useragent) {
+const isBot = function(userAgent) {
 
-	return /bot|crawler|spider|crawling/i.test(useragent)
+	return (/bot|crawler|spider|crawling/i).test(userAgent)
 
 }
 
