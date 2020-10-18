@@ -16,7 +16,13 @@ A script that interacts with the API of [Ackee](https://github.com/electerious/A
 
 ## 🚀 Installation
 
-We recommend installing ackee-tracker using [npm](https://npmjs.com) or [yarn](https://yarnpkg.com).
+We recommend loading ackee-tracker from your Ackee instance. This ensures that the script is always in sync with your installation. The script is served as `tracker.js` or as [a name of your choice](https://github.com/electerious/Ackee/blob/master/docs/Options.md#tracker).
+
+```html
+<script async src="https://example.com/tracker.js" data-ackee-server="https://example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0"></script>
+```
+
+It's also possible to install ackee-tracker as a module via [npm](https://npmjs.com) or [yarn](https://yarnpkg.com).
 
 ```sh
 npm install ackee-tracker
@@ -24,12 +30,6 @@ npm install ackee-tracker
 
 ```sh
 yarn add ackee-tracker
-```
-
-It's also possible to load ackee-tracker from your Ackee server. The script is served as `tracker.js`.
-
-```html
-<script src="https://example.com/tracker.js"></script>
 ```
 
 ## 🤗 Usage
@@ -58,7 +58,7 @@ It's also possible to customize Ackee using the `data-ackee-opts` attribute.
 
 Include the JS-file at the end of your `body` and start tracking page visits by calling `create` manually.
 
-This approach is perfect for sites without a build system. It gives you more control than the automatic solution and allows you to use `ackee-tracker` without a package manager or JS bundler.
+This approach is perfect for sites without a build system. It gives you more control than the automatic solution and allows you to use ackee-tracker without a package manager or JS bundler.
 
 ```html
 <script src="dist/ackee-tracker.min.js"></script>

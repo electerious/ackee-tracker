@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- Recommend to use the script served by your Ackee installation (#23)
+- Use `window.outerWidth` and `window.outerHeight` to avoid that the browser triggers a repaint when the script loads (#12)
+
 ## [4.0.2] - 2020-09-20
 
 ### Changed

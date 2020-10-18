@@ -67,8 +67,8 @@ export const attributes = function(detailed = false) {
 		osVersion: platform.os.version,
 		browserName: platform.name,
 		browserVersion: platform.version,
-		browserWidth: document.documentElement.clientWidth || window.outerWidth,
-		browserHeight: document.documentElement.clientHeight || window.outerHeight
+		browserWidth: window.outerWidth,
+		browserHeight: window.outerHeight
 	}
 
 	return {
