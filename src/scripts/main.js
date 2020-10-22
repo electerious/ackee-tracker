@@ -18,6 +18,9 @@ const validate = function(opts = {}) {
 	// Defaults to false
 	_opts.detailed = opts.detailed === true
 
+	// Defaults to false
+	_opts.ignoreOwnSite = opts.ignoreOwnSite === true
+
 	return _opts
 
 }
@@ -99,9 +102,10 @@ const endpoint = function(server) {
  * @param {String} url - URL to the GraphQL endpoint of the Ackee server.
  * @param {String} query - GraphQL query.
  * @param {?Object} variables - Variables for the GraphQL query.
+ * @param {?Object} opts
  * @param {Function} next - The callback that handles the response. Receives the following properties: err, json.
  */
-const send = function(url, query, variables, next) {
+const send = function(url, query, variables, opts, next) {
 
 	const xhr = new XMLHttpRequest()
 
@@ -134,7 +138,13 @@ const send = function(url, query, variables, next) {
 	}
 
 	xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
-	xhr.withCredentials = true
+
+	if (opts.ignoreOwnSite) {
+
+		xhr.withCredentials = true
+
+	}
+
 	xhr.send(JSON.stringify({ query, variables }))
 
 }
@@ -177,7 +187,7 @@ const record = function(server, domainId, attrs, opts, active) {
 	}
 
 	// Send initial request to server. This will create a new record.
-	send(url, createQuery, createVariables, (err, json) => {
+	send(url, createQuery, createVariables, opts, (err, json) => {
 
 		if (err != null) return console.error(err)
 
@@ -203,7 +213,7 @@ const record = function(server, domainId, attrs, opts, active) {
 				id: recordId
 			}
 
-			send(url, updateQuery, updateVariables, (err) => {
+			send(url, updateQuery, updateVariables, opts, (err) => {
 
 				if (err != null) return console.error(err)
 
