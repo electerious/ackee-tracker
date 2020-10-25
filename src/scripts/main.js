@@ -46,6 +46,15 @@ const isBot = function(userAgent) {
 }
 
 /**
+ * Get ref, source or utm_source parameters
+ * @returns {String} source
+ */
+const source = function() {
+	const url = new URL(window.location.href)
+	return url.searchParams.get('ref') || url.searchParams.get('source') || url.searchParams.get('utm_source') || undefined
+}
+
+/**
  * Gathers all platform-, screen- and user-related information.
  * @param {Boolean} detailed - Include personal data.
  * @returns {Object} attributes - User-related information.
@@ -54,7 +63,8 @@ export const attributes = function(detailed = false) {
 
 	const defaultData = {
 		siteLocation: window.location.href,
-		siteReferrer: document.referrer
+		siteReferrer: document.referrer,
+		source: source()
 	}
 
 	const detailedData = {
