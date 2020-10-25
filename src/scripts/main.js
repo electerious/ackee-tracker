@@ -12,14 +12,14 @@ const validate = function(opts = {}) {
 	// Create new object to avoid changes by reference
 	const _opts = {}
 
+	// Defaults to false
+	_opts.detailed = opts.detailed === true
+
 	// Defaults to true
 	_opts.ignoreLocalhost = opts.ignoreLocalhost !== false
 
 	// Defaults to false
-	_opts.detailed = opts.detailed === true
-
-	// Defaults to false
-	_opts.ignoreOwnSite = opts.ignoreOwnSite === true
+	_opts.ignoreOwnVisits = opts.ignoreOwnVisits === true
 
 	return _opts
 
@@ -139,11 +139,7 @@ const send = function(url, query, variables, opts, next) {
 
 	xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
 
-	if (opts.ignoreOwnSite) {
-
-		xhr.withCredentials = true
-
-	}
+	if (opts.ignoreOwnVisits) xhr.withCredentials = true
 
 	xhr.send(JSON.stringify({ query, variables }))
 

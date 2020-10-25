@@ -130,9 +130,9 @@ const instance = ackeeTracker.create({
 	server: 'https://example.com',
 	domainId: 'hd11f820-68a1-11e6-8047-79c0c2d9bce0'
 }, {
-	ignoreLocalhost: true,
 	detailed: false,
-	ignoreOwnSite: true
+	ignoreLocalhost: true,
+	ignoreOwnVisits: false
 })
 ```
 
@@ -212,20 +212,19 @@ The option-object can include the following properties:
 ```js
 {
 	/*
-	 * Enable or disable tracking when on localhost.
-	 */
-	ignoreLocalhost: true,
-	/*
 	 * Enable or disable tracking of personal data.
 	 * We recommend to ask the user for permission before turning this option on.
 	 */
 	detailed: false,
 	/*
-	 * Enable or disable tracking on own site (as identified by the site owner's login to the Ackee dashboard).
-	 * In order to enable this feature, make sure 'Access-Control-Allow-Credentials'
-	 * header is sent by the reverse proxy server.
+	 * Enable or disable tracking when on localhost.
 	 */
-	ignoreOwnSite: false
+	ignoreLocalhost: true,
+	/*
+	 * Enable or disable tracking on own site (as identified by the site owner's login to the Ackee dashboard).
+	 * In order to enable this feature, make sure the 'Access-Control-Allow-Credentials' header is sent by the reverse proxy server.
+	 */
+	ignoreOwnVisits: false
 }
 ```
 
