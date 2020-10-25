@@ -46,12 +46,19 @@ const isBot = function(userAgent) {
 }
 
 /**
- * Get ref, source or utm_source parameters
+ * Get ref, source or utm_source parameter
  * @returns {String} source
  */
 const source = function() {
-	const url = new URL(window.location.href)
-	return url.searchParams.get('ref') || url.searchParams.get('source') || url.searchParams.get('utm_source') || undefined
+	const ref = (location.search.split('ref=')[1] || '').split('&')[0]
+	const src = (location.search.split('source=')[1] || '').split('&')[0]
+	const utm = (location.search.split('utm_source=')[1] || '').split('&')[0]
+
+	if (ref.length > 0) return ref
+	if (src.length > 0) return src
+	if (utm.length > 0) return utm
+
+	return undefined
 }
 
 /**
