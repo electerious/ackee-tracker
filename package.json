@@ -15,6 +15,7 @@
   ],
   "scripts": {
     "build": "node build.js",
+    "test": "http-server -o",
     "lint": "eslint 'src/**/*.js'"
   },
   "license": "MIT",
@@ -34,6 +35,7 @@
     "eslint-plugin-react": "^7.21.2",
     "eslint-plugin-react-hooks": "^4.1.2",
     "eslint-plugin-react-native": "^3.9.1",
+    "http-server": "^0.12.3",
     "rosid-handler-js": "^13.0.0"
   },
   "dependencies": {
