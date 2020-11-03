@@ -34,6 +34,18 @@ const isLocalhost = function(hostname) {
 }
 
 /**
+ * Determines if user agent is a bot. Approach is to get most bots, assuming other bots don't run JS.
+ * Source: https://stackoverflow.com/questions/20084513/detect-search-crawlers-via-javascript/20084661
+ * @param {String} userAgent - User agent that should be tested.
+ * @returns {Boolean} isBot
+ */
+const isBot = function(userAgent) {
+
+	return (/bot|crawler|spider|crawling/i).test(userAgent)
+
+}
+
+/**
  * Gathers all platform-, screen- and user-related information.
  * @param {Boolean} detailed - Include personal data.
  * @returns {Object} attributes - User-related information.
@@ -56,8 +68,8 @@ export const attributes = function(detailed = false) {
 		osVersion: platform.os.version,
 		browserName: platform.name,
 		browserVersion: platform.version,
-		browserWidth: document.documentElement.clientWidth || window.outerWidth,
-		browserHeight: document.documentElement.clientHeight || window.outerHeight
+		browserWidth: window.outerWidth,
+		browserHeight: window.outerHeight
 	}
 
 	return {
@@ -140,6 +152,10 @@ const record = function(server, domainId, attrs, opts, active) {
 
 	if (opts.ignoreLocalhost === true && isLocalhost(location.hostname) === true) {
 		return console.warn('Ackee ignores you because you are on localhost')
+	}
+
+	if (isBot(navigator.userAgent) === true) {
+		return console.warn('Ackee ignores you because you are a bot')
 	}
 
 	const url = endpoint(server)
