@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### New
 
+- Ignore your own visits using the `ignoreOwnVisits` (thanks @yehudab)
 - Ignore bots (#25, #7, thanks @yehudab)
 
 ### Changed
