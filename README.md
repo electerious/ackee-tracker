@@ -221,8 +221,9 @@ The option-object can include the following properties:
 	 */
 	ignoreLocalhost: true,
 	/*
-	 * Enable or disable tracking on own site (as identified by the site owner's login to the Ackee dashboard).
+	 * Enable or disable the tracking of your own visits (as identified by your login to the Ackee dashboard).
 	 * In order to enable this feature, make sure the 'Access-Control-Allow-Credentials' header is sent by the reverse proxy server.
+	 * Some browsers strictly block third-party cookies. The option won't have an impact when this is the case.
 	 */
 	ignoreOwnVisits: false
 }
