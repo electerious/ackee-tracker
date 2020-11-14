@@ -139,7 +139,7 @@ const send = function(url, query, variables, opts, next) {
 
 	xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
 
-	if (opts.ignoreOwnVisits) xhr.withCredentials = true
+	// if (opts.ignoreOwnVisits) xhr.withCredentials = true
 
 	xhr.send(JSON.stringify({ query, variables }))
 
