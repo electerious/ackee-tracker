@@ -49,6 +49,17 @@ const isBot = function(userAgent) {
 }
 
 /**
+ * Check if record id is a fake id. This is the case when Ackee ignores you because of the `ackee_ignore` cookie.
+ * @param {String} recordId - Record id that should be tested.
+ * @returns {Boolean} isFakeRecordId
+ */
+const isFakeRecordId = function(recordId) {
+
+	return recordId === '88888888-8888-8888-8888-888888888888'
+
+}
+
+/**
  * Gathers all platform-, screen- and user-related information.
  * @param {Boolean} detailed - Include personal data.
  * @returns {Object} attributes - User-related information.
@@ -188,6 +199,10 @@ const record = function(server, domainId, attrs, opts, active) {
 		if (err != null) return console.error(err)
 
 		const recordId = json.data.createRecord.payload.id
+
+		if (isFakeRecordId(recordId) === true) {
+			return console.warn('Ackee ignores you because this is your own site')
+		}
 
 		// PATCH the record constantly to track the duration of the visit
 		const interval = setInterval(() => {
