@@ -30,16 +30,22 @@
   ],
   "devDependencies": {
     "@electerious/eslint-config": "^1.3.4",
-    "eslint": "^7.10.0",
-    "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-react": "^7.21.2",
-    "eslint-plugin-react-hooks": "^4.1.2",
-    "eslint-plugin-react-native": "^3.9.1",
+    "eslint": "^7.13.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-react-native": "^3.10.0",
     "http-server": "^0.12.3",
-    "rosid-handler-js": "^13.0.0"
+    "husky": "^4.3.0",
+    "rosid-handler-js": "^13.0.1"
   },
   "dependencies": {
     "platform": "^1.3.6"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
   },
   "eslintConfig": {
     "root": true,
