@@ -7,9 +7,9 @@
 	<script src="../dist/ackee-tracker.min.js"></script>
 
 	<script>
-		const stop = ackeeTracker.create({
-			server: '',
-			domainId: ''
+		const { stop } = ackeeTracker.create({
+			server: '<server>',
+			domainId: '<domainId>'
 		}, {
 			ignoreLocalhost: false
 		}).record()
