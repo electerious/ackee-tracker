@@ -46,13 +46,13 @@ const isBot = function(userAgent) {
 }
 
 /**
- * Check if record id is a fake id. This is the case when Ackee ignores you because of the `ackee_ignore` cookie.
- * @param {String} recordId - Record id that should be tested.
- * @returns {Boolean} isFakeRecordId
+ * Check if an id is a fake id. This is the case when Ackee ignores you because of the `ackee_ignore` cookie.
+ * @param {String} id - Id that should be tested.
+ * @returns {Boolean} isFakeId
  */
-const isFakeRecordId = function(recordId) {
+const isFakeId = function(id) {
 
-	return recordId === '88888888-8888-8888-8888-888888888888'
+	return id === '88888888-8888-8888-8888-888888888888'
 
 }
 
@@ -127,12 +127,66 @@ const updateRecordBody = function(recordId) {
 		query: `
 			mutation updateRecord($id: ID!) {
 				updateRecord(id: $id) {
-					success
+					payload {
+						id
+					}
 				}
 			}
 		`,
 		variables: {
 			id: recordId
+		}
+	}
+
+}
+
+/**
+ * Creates an object with a query and variables property to create an action on the server.
+ * @param {String} eventId - Id of the event.
+ * @param {Object} input - Data that should be transferred to the server.
+ * @returns {Object} Create action body.
+ */
+const createActionBody = function(eventId, input) {
+
+	return {
+		query: `
+			mutation createAction($eventId: ID!, $input: CreateActionInput!) {
+				createAction(eventId: $eventId, input: $input) {
+					payload {
+						id
+					}
+				}
+			}
+		`,
+		variables: {
+			eventId,
+			input
+		}
+	}
+
+}
+
+/**
+ * Creates an object with a query and variables property to update an action on the server.
+ * @param {String} actionId - Id of the action.
+ * @param {Object} input - Data that should be transferred to the server.
+ * @returns {Object} Update action body.
+ */
+const updateActionBody = function(actionId, input) {
+
+	return {
+		query: `
+			mutation updateAction($actionId: ID!, $input: UpdateActionInput!) {
+				updateAction(actionId: $actionId, input: $input) {
+					payload {
+						id
+					}
+				}
+			}
+		`,
+		variables: {
+			actionId,
+			input
 		}
 	}
 
@@ -183,7 +237,9 @@ const send = function(url, body, next) {
 			throw new Error(json.errors[0].message)
 		}
 
-		return next(json)
+		if (typeof next === 'function') {
+			return next(json)
+		}
 
 	}
 
@@ -228,10 +284,7 @@ export const create = function({ server, domainId }, opts) {
 	// Creates a new record on the server and updates the record
 	// very x seconds to track the duration of the visit. Tries to use
 	// the default attributes when there're no custom attributes defined.
-	const _record = (attrs = attributes(opts.detailed), callbacks = {}) => {
-
-		const onCreate = callbacks.onCreate || (() => {})
-		const onUpdate = callbacks.onUpdate || (() => {})
+	const _record = (attrs = attributes(opts.detailed), next) => {
 
 		// Function to stop updating the record
 		let isStopped = false
@@ -251,11 +304,9 @@ export const create = function({ server, domainId }, opts) {
 
 			const recordId = json.data.createRecord.payload.id
 
-			if (isFakeRecordId(recordId) === true) {
+			if (isFakeId(recordId) === true) {
 				return console.warn('Ackee ignores you because this is your own site')
 			}
-
-			onCreate(recordId)
 
 			const interval = setInterval(() => {
 
@@ -264,11 +315,13 @@ export const create = function({ server, domainId }, opts) {
 					return
 				}
 
-				send(url, updateRecordBody(recordId), () => {
-					onUpdate(recordId)
-				})
+				send(url, updateRecordBody(recordId))
 
 			}, 15000)
+
+			if (typeof next === 'function') {
+				return next(recordId)
+			}
 
 		})
 
@@ -276,10 +329,8 @@ export const create = function({ server, domainId }, opts) {
 
 	}
 
-	// Updates a record very x seconds to track the duration of the visit.
-	const _updateRecord = (recordId, callbacks = {}) => {
-
-		const onUpdate = callbacks.onUpdate || (() => {})
+	// Updates a record very x seconds to track the duration of the visit
+	const _updateRecord = (recordId) => {
 
 		// Function to stop updating the record
 		let isStopped = false
@@ -295,11 +346,6 @@ export const create = function({ server, domainId }, opts) {
 			return { stop }
 		}
 
-		if (isFakeRecordId(recordId) === true) {
-			console.warn('Ackee ignores you because this is your own site')
-			return { stop }
-		}
-
 		const interval = setInterval(() => {
 
 			if (isStopped === true) {
@@ -307,8 +353,14 @@ export const create = function({ server, domainId }, opts) {
 				return
 			}
 
-			send(url, updateRecordBody(recordId), () => {
-				onUpdate(recordId)
+			send(url, updateRecordBody(recordId), (json) => {
+
+				const recordId = json.data.updateRecord.payload.id
+
+				if (isFakeId(recordId) === true) {
+					return console.warn('Ackee ignores you because this is your own site')
+				}
+
 			})
 
 		}, 15000)
@@ -317,10 +369,62 @@ export const create = function({ server, domainId }, opts) {
 
 	}
 
+	// Creates a new action on the server
+	const _action = (eventId, attrs, next) => {
+
+		if (opts.ignoreLocalhost === true && isLocalhost(location.hostname) === true) {
+			return console.warn('Ackee ignores you because you are on localhost')
+		}
+
+		if (isBot(navigator.userAgent) === true) {
+			return console.warn('Ackee ignores you because you are a bot')
+		}
+
+		send(url, createActionBody(eventId, attrs), (json) => {
+
+			const actionId = json.data.createAction.payload.id
+
+			if (isFakeId(actionId) === true) {
+				return console.warn('Ackee ignores you because this is your own site')
+			}
+
+			if (typeof next === 'function') {
+				return next(actionId)
+			}
+
+		})
+
+	}
+
+	// Updates an action
+	const _updateAction = (actionId, attrs) => {
+
+		if (opts.ignoreLocalhost === true && isLocalhost(location.hostname) === true) {
+			return console.warn('Ackee ignores you because you are on localhost')
+		}
+
+		if (isBot(navigator.userAgent) === true) {
+			return console.warn('Ackee ignores you because you are a bot')
+		}
+
+		send(url, updateActionBody(actionId, attrs), (json) => {
+
+			const actionId = json.data.updateAction.payload.id
+
+			if (isFakeId(actionId) === true) {
+				return console.warn('Ackee ignores you because this is your own site')
+			}
+
+		})
+
+	}
+
 	// Return the instance
 	return {
 		record: _record,
-		updateRecord: _updateRecord
+		updateRecord: _updateRecord,
+		action: _action,
+		updateAction: _updateAction
 	}
 
 }
