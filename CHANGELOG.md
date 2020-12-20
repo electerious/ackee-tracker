@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased (Events)]
 
+### Added
+
+- `onCreate` and `onUpdate` callbacks for `.record` (#19)
+- `.updateRecord` function to update an existing record (#19)
+- `onUpdate` callback for `.updateRecord` (#19)
+
 ### Changed
 
 - `ignoreOwnVisits` is now enabled by default
