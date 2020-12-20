@@ -94,6 +94,62 @@ export const attributes = function(detailed = false) {
 }
 
 /**
+ * Creates an object with a query and variables property to create a record on the server.
+ * @param {String} domainId - Id of the domain.
+ * @param {Object} attrs - Attributes that should be transferred to the server.
+ * @returns {Object} Create record body.
+ */
+const createRecordBody = function(domainId, attrs) {
+
+	const query = `
+		mutation createRecord($domainId: ID!, $input: CreateRecordInput!) {
+			createRecord(domainId: $domainId, input: $input) {
+				payload {
+					id
+				}
+			}
+		}
+	`
+
+	const variables = {
+		domainId,
+		input: attrs
+	}
+
+	return {
+		query,
+		variables
+	}
+
+}
+
+/**
+ * Creates an object with a query and variables property to update a record on the server.
+ * @param {String} recordId - Id of the record.
+ * @returns {Object} Update record body.
+ */
+const updateRecordBody = function(recordId) {
+
+	const query = `
+		mutation updateRecord($id: ID!) {
+			updateRecord(id: $id) {
+				success
+			}
+		}
+	`
+
+	const variables = {
+		id: recordId
+	}
+
+	return {
+		query,
+		variables
+	}
+
+}
+
+/**
  * Construct URL to the GraphQL endpoint of Ackee.
  * @param {String} server - URL of the Ackee server.
  * @returns {String} endpoint - URL to the GraphQL endpoint of the Ackee server.
@@ -111,12 +167,11 @@ const endpoint = function(server) {
  * Won't catch all errors as some are already logged by the browser.
  * In this case the callback won't fire.
  * @param {String} url - URL to the GraphQL endpoint of the Ackee server.
- * @param {String} query - GraphQL query.
- * @param {?Object} variables - Variables for the GraphQL query.
+ * @param {Object} body - JSON which will be send to the server.
  * @param {?Object} opts
- * @param {Function} next - The callback that handles the response. Receives the following properties: err, json.
+ * @param {Function} next - The callback that handles the response. Receives the following properties: json.
  */
-const send = function(url, query, variables, opts, next) {
+const send = function(url, body, opts, next) {
 
 	const xhr = new XMLHttpRequest()
 
@@ -131,18 +186,18 @@ const send = function(url, query, variables, opts, next) {
 			try {
 				json = JSON.parse(xhr.responseText)
 			} catch (e) {
-				return next(new Error('Failed to parse response from server'))
+				throw new Error('Failed to parse response from server')
 			}
 
 			if (json.errors != null) {
-				return next(new Error(json.errors[0].message))
+				throw new Error(json.errors[0].message)
 			}
 
-			return next(null, json)
+			return next(json)
 
 		} else {
 
-			return next(new Error('Server returned with an unhandled status'))
+			throw new Error('Server returned with an unhandled status')
 
 		}
 
@@ -152,7 +207,7 @@ const send = function(url, query, variables, opts, next) {
 
 	if (opts.ignoreOwnVisits) xhr.withCredentials = true
 
-	xhr.send(JSON.stringify({ query, variables }))
+	xhr.send(JSON.stringify(body))
 
 }
 
@@ -164,9 +219,10 @@ const send = function(url, query, variables, opts, next) {
  * @param {Object} attrs - Attributes that should be transferred to the server.
  * @param {Object} opts
  * @param {Function} active - Indicates if the record should still update.
+ * @param {Object} callbacks - Objects with callback functions to execute when appropriate.
  * @returns {?*}
  */
-const record = function(server, domainId, attrs, opts, active) {
+const record = function(server, domainId, attrs, opts, active, callbacks = {}) {
 
 	if (opts.ignoreLocalhost === true && isLocalhost(location.hostname) === true) {
 		return console.warn('Ackee ignores you because you are on localhost')
@@ -176,33 +232,23 @@ const record = function(server, domainId, attrs, opts, active) {
 		return console.warn('Ackee ignores you because you are a bot')
 	}
 
+	const onCreate = callbacks.onCreate || (() => {})
+	const onUpdate = callbacks.onUpdate || (() => {})
+
 	const url = endpoint(server)
-
-	const createQuery = `
-		mutation createRecord($domainId: ID!, $input: CreateRecordInput!) {
-			createRecord(domainId: $domainId, input: $input) {
-				payload {
-					id
-				}
-			}
-		}
-	`
-
-	const createVariables = {
-		domainId,
-		input: attrs
-	}
+	const createBody = createRecordBody(domainId, attrs)
 
 	// Send initial request to server. This will create a new record.
-	send(url, createQuery, createVariables, opts, (err, json) => {
-
-		if (err != null) return console.error(err)
+	send(url, createBody, opts, (json) => {
 
 		const recordId = json.data.createRecord.payload.id
+		const updateBody = updateRecordBody(recordId)
 
 		if (isFakeRecordId(recordId) === true) {
 			return console.warn('Ackee ignores you because this is your own site')
 		}
+
+		onCreate(recordId)
 
 		// PATCH the record constantly to track the duration of the visit
 		const interval = setInterval(() => {
@@ -212,22 +258,8 @@ const record = function(server, domainId, attrs, opts, active) {
 				return
 			}
 
-			const updateQuery = `
-				mutation updateRecord($id: ID!) {
-					updateRecord(id: $id) {
-						success
-					}
-				}
-			`
-
-			const updateVariables = {
-				id: recordId
-			}
-
-			send(url, updateQuery, updateVariables, opts, (err) => {
-
-				if (err != null) return console.error(err)
-
+			send(url, updateBody, opts, () => {
+				onUpdate(recordId)
 			})
 
 		}, 15000)
@@ -270,7 +302,7 @@ export const create = function({ server, domainId }, opts) {
 	// Creates a new record on the server and updates the record
 	// very x seconds to track the duration of the visit. Tries to use
 	// the default attributes when there're no custom attributes defined.
-	const _record = (attrs = attributes(opts.detailed)) => {
+	const _record = (attrs = attributes(opts.detailed), callbacks) => {
 
 		// Manually stop updating
 		let isStopped = false
@@ -284,7 +316,7 @@ export const create = function({ server, domainId }, opts) {
 		// Call this function to stop updating the record
 		const stop = () => { isStopped = true }
 
-		record(server, domainId, attrs, opts, active)
+		record(server, domainId, attrs, opts, active, callbacks)
 
 		return {
 			stop
