@@ -212,20 +212,10 @@ const send = function(url, body, next) {
  * @param {String} server - URL of the Ackee server.
  * @param {String} domainId - Id of the domain.
  * @param {Object} attrs - Attributes that should be transferred to the server.
- * @param {Object} opts
  * @param {Function} active - Indicates if the record should still update.
  * @param {Object} callbacks - Objects with callback functions to execute when appropriate.
- * @returns {?*}
  */
-const record = function(server, domainId, attrs, opts, active, callbacks = {}) {
-
-	if (opts.ignoreLocalhost === true && isLocalhost(location.hostname) === true) {
-		return console.warn('Ackee ignores you because you are on localhost')
-	}
-
-	if (isBot(navigator.userAgent) === true) {
-		return console.warn('Ackee ignores you because you are a bot')
-	}
+const record = function(server, domainId, attrs, active, callbacks = {}) {
 
 	const onCreate = callbacks.onCreate || (() => {})
 	const onUpdate = callbacks.onUpdate || (() => {})
@@ -311,11 +301,18 @@ export const create = function({ server, domainId }, opts) {
 		// Call this function to stop updating the record
 		const stop = () => { isStopped = true }
 
-		record(server, domainId, attrs, opts, active, callbacks)
-
-		return {
-			stop
+		if (opts.ignoreLocalhost === true && isLocalhost(location.hostname) === true) {
+			console.warn('Ackee ignores you because you are on localhost')
+			return { stop }
 		}
+
+		if (isBot(navigator.userAgent) === true) {
+			console.warn('Ackee ignores you because you are a bot')
+			return { stop }
+		}
+
+		record(server, domainId, attrs, active, callbacks)
+		return { stop }
 
 	}
 
