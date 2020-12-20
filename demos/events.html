@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+
+	<meta charset="utf-8">
+	<title>ackee-tracker Demo</title>
+
+	<script src="../dist/ackee-tracker.min.js"></script>
+
+	<script>
+		const instance = ackeeTracker.create({
+			server: '<server>',
+			domainId: '<domainId>'
+		}, {
+			ignoreLocalhost: false
+		})
+
+		let actionId
+
+		document.querySelector('#create').onClick = () => {
+			instance.action('<eventId>', {
+				value: 1
+			}, (_actionId) => {
+				actionId = _actionId
+				document.querySelector('#id').html = actionId
+			})
+		}
+
+		document.querySelector('#update').onClick = () => {
+			instance.action(actionId, {
+				value: 0
+			})
+		}
+	</script>
+
+	<button id="create">Create action</button>
+	<button id="update">Update action</button>
+	<span id="id"></span>
+
+</html>
