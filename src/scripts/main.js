@@ -175,27 +175,23 @@ const send = function(url, body, next) {
 
 	xhr.onload = () => {
 
-		if (xhr.status === 200 || xhr.status === 201) {
-
-			let json = null
-
-			try {
-				json = JSON.parse(xhr.responseText)
-			} catch (e) {
-				throw new Error('Failed to parse response from server')
-			}
-
-			if (json.errors != null) {
-				throw new Error(json.errors[0].message)
-			}
-
-			return next(json)
-
-		} else {
-
+		if (xhr.status !== 200) {
 			throw new Error('Server returned with an unhandled status')
-
 		}
+
+		let json = null
+
+		try {
+			json = JSON.parse(xhr.responseText)
+		} catch (e) {
+			throw new Error('Failed to parse response from server')
+		}
+
+		if (json.errors != null) {
+			throw new Error(json.errors[0].message)
+		}
+
+		return next(json)
 
 	}
 
@@ -212,43 +208,33 @@ const send = function(url, body, next) {
  * @param {String} server - URL of the Ackee server.
  * @param {String} domainId - Id of the domain.
  * @param {Object} attrs - Attributes that should be transferred to the server.
- * @param {Function} active - Indicates if the record should still update.
- * @param {Object} callbacks - Objects with callback functions to execute when appropriate.
+ * @param {Function} next - The callback that handles the response. Receives the following properties: recordId.
  */
-const record = function(server, domainId, attrs, active, callbacks = {}) {
-
-	const onCreate = callbacks.onCreate || (() => {})
-	const onUpdate = callbacks.onUpdate || (() => {})
+const record = function(server, domainId, attrs, next) {
 
 	const url = endpoint(server)
-	const createBody = createRecordBody(domainId, attrs)
+	const body = createRecordBody(domainId, attrs)
 
 	// Send initial request to server. This will create a new record.
-	send(url, createBody, (json) => {
+	send(url, body, (json) => {
+		next(json.data.createRecord.payload.id)
+	})
 
-		const recordId = json.data.createRecord.payload.id
-		const updateBody = updateRecordBody(recordId)
+}
 
-		if (isFakeRecordId(recordId) === true) {
-			return console.warn('Ackee ignores you because this is your own site')
-		}
+/**
+ * Updates a record on the server every x seconds to track the duration of the visit.
+ * @param {String} server - URL of the Ackee server.
+ * @param {String} recordId - Id of the record.
+ * @param {Function} next - The callback that handles the response. Receives the following properties: recordId.
+ */
+const updateRecord = function(server, recordId, next) {
 
-		onCreate(recordId)
+	const url = endpoint(server)
+	const body = updateRecordBody(recordId)
 
-		// PATCH the record constantly to track the duration of the visit
-		const interval = setInterval(() => {
-
-			if (active() === false) {
-				clearInterval(interval)
-				return
-			}
-
-			send(url, updateBody, () => {
-				onUpdate(recordId)
-			})
-
-		}, 15000)
-
+	send(url, body, () => {
+		next(recordId)
 	})
 
 }
@@ -279,26 +265,19 @@ export const detect = function() {
  */
 export const create = function({ server, domainId }, opts) {
 
-	let globalExecutionId
-
 	// Validate options
 	opts = validate(opts)
 
 	// Creates a new record on the server and updates the record
 	// very x seconds to track the duration of the visit. Tries to use
 	// the default attributes when there're no custom attributes defined.
-	const _record = (attrs = attributes(opts.detailed), callbacks) => {
+	const _record = (attrs = attributes(opts.detailed), callbacks = {}) => {
 
-		// Manually stop updating
+		const onCreate = callbacks.onCreate || (() => {})
+		const onUpdate = callbacks.onUpdate || (() => {})
+
+		// Function to stop updating the record
 		let isStopped = false
-
-		// Automatically stop updating when calling the record function, again
-		const localExecutionId = globalExecutionId = Date.now()
-
-		// Helper function that checks if the record should still update
-		const active = () => isStopped === false && localExecutionId === globalExecutionId
-
-		// Call this function to stop updating the record
 		const stop = () => { isStopped = true }
 
 		if (opts.ignoreLocalhost === true && isLocalhost(location.hostname) === true) {
@@ -311,14 +290,78 @@ export const create = function({ server, domainId }, opts) {
 			return { stop }
 		}
 
-		record(server, domainId, attrs, active, callbacks)
+		record(server, domainId, attrs, (recordId) => {
+
+			if (isFakeRecordId(recordId) === true) {
+				return console.warn('Ackee ignores you because this is your own site')
+			}
+
+			onCreate(recordId)
+
+			const interval = setInterval(() => {
+
+				if (isStopped === true) {
+					clearInterval(interval)
+					return
+				}
+
+				updateRecord(server, recordId, () => {
+					onUpdate(recordId)
+				})
+
+			}, 15000)
+
+		})
+
+		return { stop }
+
+	}
+
+	// Updates a record very x seconds to track the duration of the visit.
+	const _updateRecord = (recordId, callbacks = {}) => {
+
+		const onUpdate = callbacks.onUpdate || (() => {})
+
+		// Function to stop updating the record
+		let isStopped = false
+		const stop = () => { isStopped = true }
+
+		if (opts.ignoreLocalhost === true && isLocalhost(location.hostname) === true) {
+			console.warn('Ackee ignores you because you are on localhost')
+			return { stop }
+		}
+
+		if (isBot(navigator.userAgent) === true) {
+			console.warn('Ackee ignores you because you are a bot')
+			return { stop }
+		}
+
+		if (isFakeRecordId(recordId) === true) {
+			console.warn('Ackee ignores you because this is your own site')
+			return { stop }
+		}
+
+		const interval = setInterval(() => {
+
+			if (isStopped === true) {
+				clearInterval(interval)
+				return
+			}
+
+			updateRecord(server, recordId, () => {
+				onUpdate(recordId)
+			})
+
+		}, 15000)
+
 		return { stop }
 
 	}
 
 	// Return the instance
 	return {
-		record: _record
+		record: _record,
+		updateRecord: _updateRecord
 	}
 
 }
