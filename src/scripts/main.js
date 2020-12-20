@@ -93,10 +93,10 @@ export const attributes = function(detailed = false) {
 /**
  * Creates an object with a query and variables property to create a record on the server.
  * @param {String} domainId - Id of the domain.
- * @param {Object} attrs - Attributes that should be transferred to the server.
+ * @param {Object} input - Data that should be transferred to the server.
  * @returns {Object} Create record body.
  */
-const createRecordBody = function(domainId, attrs) {
+const createRecordBody = function(domainId, input) {
 
 	return {
 		query: `
@@ -110,7 +110,7 @@ const createRecordBody = function(domainId, attrs) {
 		`,
 		variables: {
 			domainId,
-			input: attrs
+			input
 		}
 	}
 
@@ -195,40 +195,6 @@ const send = function(url, body, next) {
 }
 
 /**
- * Creates a new record on the server.
- * @param {String} url - URL to the GraphQL endpoint of the Ackee server.
- * @param {String} domainId - Id of the domain.
- * @param {Object} attrs - Attributes that should be transferred to the server.
- * @param {Function} next - The callback that handles the response. Receives the following properties: recordId.
- */
-const record = function(url, domainId, attrs, next) {
-
-	const body = createRecordBody(domainId, attrs)
-
-	// Send initial request to server. This will create a new record.
-	send(url, body, (json) => {
-		next(json.data.createRecord.payload.id)
-	})
-
-}
-
-/**
- * Updates a record on the server.
- * @param {String} url - URL to the GraphQL endpoint of the Ackee server.
- * @param {String} recordId - Id of the record.
- * @param {Function} next - The callback that handles the response. Receives the following properties: recordId.
- */
-const updateRecord = function(url, recordId, next) {
-
-	const body = updateRecordBody(recordId)
-
-	send(url, body, () => {
-		next(recordId)
-	})
-
-}
-
-/**
  * Looks for an element with Ackee attributes and executes Ackee with the given attributes.
  * Fails silently.
  */
@@ -281,7 +247,9 @@ export const create = function({ server, domainId }, opts) {
 			return { stop }
 		}
 
-		record(url, domainId, attrs, (recordId) => {
+		send(url, createRecordBody(domainId, attrs), (json) => {
+
+			const recordId = json.data.createRecord.payload.id
 
 			if (isFakeRecordId(recordId) === true) {
 				return console.warn('Ackee ignores you because this is your own site')
@@ -296,7 +264,7 @@ export const create = function({ server, domainId }, opts) {
 					return
 				}
 
-				updateRecord(url, recordId, () => {
+				send(url, updateRecordBody(recordId), () => {
 					onUpdate(recordId)
 				})
 
@@ -339,7 +307,7 @@ export const create = function({ server, domainId }, opts) {
 				return
 			}
 
-			updateRecord(url, recordId, () => {
+			send(url, updateRecordBody(recordId), () => {
 				onUpdate(recordId)
 			})
 
