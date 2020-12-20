@@ -98,24 +98,20 @@ export const attributes = function(detailed = false) {
  */
 const createRecordBody = function(domainId, attrs) {
 
-	const query = `
-		mutation createRecord($domainId: ID!, $input: CreateRecordInput!) {
-			createRecord(domainId: $domainId, input: $input) {
-				payload {
-					id
+	return {
+		query: `
+			mutation createRecord($domainId: ID!, $input: CreateRecordInput!) {
+				createRecord(domainId: $domainId, input: $input) {
+					payload {
+						id
+					}
 				}
 			}
+		`,
+		variables: {
+			domainId,
+			input: attrs
 		}
-	`
-
-	const variables = {
-		domainId,
-		input: attrs
-	}
-
-	return {
-		query,
-		variables
 	}
 
 }
@@ -127,21 +123,17 @@ const createRecordBody = function(domainId, attrs) {
  */
 const updateRecordBody = function(recordId) {
 
-	const query = `
-		mutation updateRecord($id: ID!) {
-			updateRecord(id: $id) {
-				success
-			}
-		}
-	`
-
-	const variables = {
-		id: recordId
-	}
-
 	return {
-		query,
-		variables
+		query: `
+			mutation updateRecord($id: ID!) {
+				updateRecord(id: $id) {
+					success
+				}
+			}
+		`,
+		variables: {
+			id: recordId
+		}
 	}
 
 }
