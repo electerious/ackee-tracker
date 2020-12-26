@@ -262,17 +262,17 @@ export const detect = function() {
 	const domainId = elem.getAttribute('data-ackee-domain-id')
 	const opts = elem.getAttribute('data-ackee-opts') || '{}'
 
-	create({ server, domainId }, JSON.parse(opts)).record()
+	create(server, JSON.parse(opts)).record(domainId)
 
 }
 
 /**
  * Creates a new instance.
- * @param {Object} server - Server details.
+ * @param {String} server - URL of the Ackee server.
  * @param {?Object} opts
  * @returns {Object} instance
  */
-export const create = function({ server, domainId }, opts) {
+export const create = function(server, opts) {
 
 	// Validate options
 	opts = validate(opts)
@@ -282,7 +282,7 @@ export const create = function({ server, domainId }, opts) {
 	// Creates a new record on the server and updates the record
 	// very x seconds to track the duration of the visit. Tries to use
 	// the default attributes when there're no custom attributes defined.
-	const _record = (attrs = attributes(opts.detailed), next) => {
+	const _record = (domainId, attrs = attributes(opts.detailed), next) => {
 
 		// Function to stop updating the record
 		let isStopped = false

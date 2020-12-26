@@ -58,16 +58,13 @@ It's also possible to customize Ackee using the `data-ackee-opts` attribute.
 
 Include the JS-file at the end of your `body` and start tracking page visits by calling `create` manually.
 
-This approach is perfect for sites without a build system. It gives you more control than the automatic solution and allows you to use ackee-tracker without a package manager or JS bundler.
+This approach is perfect for sites without a build system. It gives you more control than the automatic solution, but still allows you to use ackee-tracker without a package manager or JS bundler.
 
 ```html
 <script src="dist/ackee-tracker.min.js"></script>
 
 <script>
-	ackeeTracker.create({
-		server: 'https://example.com',
-		domainId: 'hd11f820-68a1-11e6-8047-79c0c2d9bce0'
-	}).record()
+	ackeeTracker.create('https://example.com').record('hd11f820-68a1-11e6-8047-79c0c2d9bce0')
 </script>
 ```
 
@@ -81,15 +78,14 @@ Example:
 
 ```js
 const ackeeTracker = require('ackee-tracker')
+
+ackeeTracker.create('https://example.com').record('hd11f820-68a1-11e6-8047-79c0c2d9bce0')
 ```
 
 ```js
 import * as ackeeTracker from 'ackee-tracker'
 
-ackeeTracker.create({
-	server: 'https://example.com',
-	domainId: 'hd11f820-68a1-11e6-8047-79c0c2d9bce0'
-}).record()
+ackeeTracker.create('https://example.com').record('hd11f820-68a1-11e6-8047-79c0c2d9bce0')
 ```
 
 ## ⚙️ API
@@ -98,7 +94,7 @@ ackeeTracker.create({
 
 Looks for an element with Ackee attributes, creates an instance and starts tracking.
 
-The function fails silently when it can't find a suitable element.
+This function runs automatically in a browser environment and fails silently when it can't find a suitable element. You usually don't need to call this function.
 
 Example:
 
@@ -114,22 +110,16 @@ ackeeTracker.detect()
 
 Creates a new ackee-tracker instance.
 
-Be sure to assign your instance to a variable. Tracking a visit by creating a new record is only possible with an instance.
+Be sure to assign your instance to a variable. Tracking a visit or event is only possible with an instance.
 
 Examples:
 
 ```js
-const instance = ackeeTracker.create({
-	server: 'https://example.com',
-	domainId: 'hd11f820-68a1-11e6-8047-79c0c2d9bce0'
-})
+const instance = ackeeTracker.create('https://example.com')
 ```
 
 ```js
-const instance = ackeeTracker.create({
-	server: 'https://example.com',
-	domainId: 'hd11f820-68a1-11e6-8047-79c0c2d9bce0'
-}, {
+const instance = ackeeTracker.create('https://example.com', {
 	detailed: false,
 	ignoreLocalhost: true
 })
@@ -137,7 +127,7 @@ const instance = ackeeTracker.create({
 
 Parameters:
 
-- `server` `{Object}` An object that contains details about your [Ackee](https://github.com/electerious/Ackee) installation. The `server` property must not end with a slash.
+- `server` `{String}` An URL that points to your [Ackee](https://github.com/electerious/Ackee) installation. The `server` property must not end with a slash.
 - `opts` `{?Object}` An object of [options](#-options).
 
 Returns:
@@ -172,16 +162,16 @@ Each ackeeTracker instance is an object with functions you can use to track your
 
 ### .record(attributes)
 
-Creates a new record on the server and updates the record constantly to track the duration of the visit. The update of old records will be canceled when you call this function once again.
+Creates a new record on the server and updates the record constantly to track the duration of the visit.
 
 Examples:
 
 ```js
-instance.record()
+instance.record('hd11f820-68a1-11e6-8047-79c0c2d9bce0')
 ```
 
 ```js
-instance.record({
+instance.record('hd11f820-68a1-11e6-8047-79c0c2d9bce0', {
 	siteLocation: window.location.href,
 	siteReferrer: document.referrer
 })
@@ -198,6 +188,7 @@ stop()
 
 Parameters:
 
+- `domainId` `{String}` Id of the domain.
 - `attributes` `{?Object}` Attributes that should be transferred to the server. Will be `ackeeTracker.attributes()` unless specified otherwise.
 
 Returns:
