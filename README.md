@@ -34,9 +34,11 @@ yarn add ackee-tracker
 
 ## 🤗 Usage
 
-- [Automatically](#automatically) - Via script tag
-- [Manually](#manually) - Via script tag and code
-- [Programmatic](#programmatic) - Via module
+| Type                            | Usage                   | Best for                      | Records (Views) | Actions (Events) |
+| ------------------------------- | ----------------------- | ----------------------------- | --------------- | ---------------- |
+| [Automatically](#automatically) | Via script tag          | Simple sites                  | ✅              | ⛔️               |
+| [Manually](#manually)           | Via script tag and code | Advanced sites                | ✅              | ✅               |
+| [Programmatic](#programmatic)   | Via module              | Modern sites with build tools | ✅              | ✅               |
 
 ### Automatically
 
