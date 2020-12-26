@@ -125,14 +125,14 @@ const updateRecordBody = function(recordId) {
 
 	return {
 		query: `
-			mutation updateRecord($id: ID!) {
-				updateRecord(id: $id) {
+			mutation updateRecord($recordId: ID!) {
+				updateRecord(id: $recordId) {
 					success
 				}
 			}
 		`,
 		variables: {
-			id: recordId
+			recordId
 		}
 	}
 
@@ -175,10 +175,8 @@ const updateActionBody = function(actionId, input) {
 	return {
 		query: `
 			mutation updateAction($actionId: ID!, $input: UpdateActionInput!) {
-				updateAction(actionId: $actionId, input: $input) {
-					payload {
-						id
-					}
+				updateAction(id: $actionId, input: $input) {
+					success
 				}
 			}
 		`,
@@ -274,10 +272,27 @@ export const detect = function() {
  */
 export const create = function(server, opts) {
 
-	// Validate options
 	opts = validate(opts)
-
 	const url = endpoint(server)
+	const noop = () => {}
+
+	// Fake instance when Ackee ignores you
+	const fakeInstance = {
+		record: () => ({ stop: noop }),
+		updateRecord: () => ({ stop: noop }),
+		action: noop,
+		updateAction: noop
+	}
+
+	if (opts.ignoreLocalhost === true && isLocalhost(location.hostname) === true) {
+		console.warn('Ackee ignores you because you are on localhost')
+		return fakeInstance
+	}
+
+	if (isBot(navigator.userAgent) === true) {
+		console.warn('Ackee ignores you because you are a bot')
+		return fakeInstance
+	}
 
 	// Creates a new record on the server and updates the record
 	// very x seconds to track the duration of the visit. Tries to use
@@ -287,16 +302,6 @@ export const create = function(server, opts) {
 		// Function to stop updating the record
 		let isStopped = false
 		const stop = () => { isStopped = true }
-
-		if (opts.ignoreLocalhost === true && isLocalhost(location.hostname) === true) {
-			console.warn('Ackee ignores you because you are on localhost')
-			return { stop }
-		}
-
-		if (isBot(navigator.userAgent) === true) {
-			console.warn('Ackee ignores you because you are a bot')
-			return { stop }
-		}
 
 		send(url, createRecordBody(domainId, attrs), (json) => {
 
@@ -334,18 +339,9 @@ export const create = function(server, opts) {
 		let isStopped = false
 		const stop = () => { isStopped = true }
 
-		if (opts.ignoreLocalhost === true && isLocalhost(location.hostname) === true) {
-			console.warn('Ackee ignores you because you are on localhost')
-			return { stop }
-		}
-
-		if (isBot(navigator.userAgent) === true) {
-			console.warn('Ackee ignores you because you are a bot')
-			return { stop }
-		}
-
 		if (isFakeId(recordId) === true) {
-			return console.warn('Ackee ignores you because this is your own site')
+			console.warn('Ackee ignores you because this is your own site')
+			return { stop }
 		}
 
 		const interval = setInterval(() => {
@@ -366,14 +362,6 @@ export const create = function(server, opts) {
 	// Creates a new action on the server
 	const _action = (eventId, attrs, next) => {
 
-		if (opts.ignoreLocalhost === true && isLocalhost(location.hostname) === true) {
-			return console.warn('Ackee ignores you because you are on localhost')
-		}
-
-		if (isBot(navigator.userAgent) === true) {
-			return console.warn('Ackee ignores you because you are a bot')
-		}
-
 		send(url, createActionBody(eventId, attrs), (json) => {
 
 			const actionId = json.data.createAction.payload.id
@@ -393,27 +381,15 @@ export const create = function(server, opts) {
 	// Updates an action
 	const _updateAction = (actionId, attrs) => {
 
-		if (opts.ignoreLocalhost === true && isLocalhost(location.hostname) === true) {
-			return console.warn('Ackee ignores you because you are on localhost')
+		if (isFakeId(actionId) === true) {
+			return console.warn('Ackee ignores you because this is your own site')
 		}
 
-		if (isBot(navigator.userAgent) === true) {
-			return console.warn('Ackee ignores you because you are a bot')
-		}
-
-		send(url, updateActionBody(actionId, attrs), (json) => {
-
-			const actionId = json.data.updateAction.payload.id
-
-			if (isFakeId(actionId) === true) {
-				return console.warn('Ackee ignores you because this is your own site')
-			}
-
-		})
+		send(url, updateActionBody(actionId, attrs))
 
 	}
 
-	// Return the instance
+	// Return the real instance
 	return {
 		record: _record,
 		updateRecord: _updateRecord,
