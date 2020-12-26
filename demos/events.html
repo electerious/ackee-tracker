@@ -6,6 +6,10 @@
 
 	<script src="../dist/ackee-tracker.min.js"></script>
 
+	<button id="create">Create action</button>
+	<button id="update">Update action</button>
+	<span id="id"></span>
+
 	<script>
 		const instance = ackeeTracker.create('<server>', {
 			ignoreLocalhost: false
@@ -13,24 +17,20 @@
 
 		let actionId
 
-		document.querySelector('#create').onClick = () => {
+		document.querySelector('#create').onclick = () => {
 			instance.action('<eventId>', {
 				value: 1
 			}, (_actionId) => {
 				actionId = _actionId
-				document.querySelector('#id').html = actionId
+				document.querySelector('#id').innerHTML = actionId
 			})
 		}
 
-		document.querySelector('#update').onClick = () => {
-			instance.action(actionId, {
-				value: 0
+		document.querySelector('#update').onclick = () => {
+			instance.updateAction(actionId, {
+				value: null
 			})
 		}
 	</script>
-
-	<button id="create">Create action</button>
-	<button id="update">Update action</button>
-	<span id="id"></span>
 
 </html>
