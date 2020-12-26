@@ -127,9 +127,7 @@ const updateRecordBody = function(recordId) {
 		query: `
 			mutation updateRecord($id: ID!) {
 				updateRecord(id: $id) {
-					payload {
-						id
-					}
+					success
 				}
 			}
 		`,
@@ -211,7 +209,7 @@ const endpoint = function(server) {
  * In this case the callback won't fire.
  * @param {String} url - URL to the GraphQL endpoint of the Ackee server.
  * @param {Object} body - JSON which will be send to the server.
- * @param {Function} next - The callback that handles the response. Receives the following properties: json.
+ * @param {?Function} next - The callback that handles the response. Receives the following properties: json.
  */
 const send = function(url, body, next) {
 
@@ -346,6 +344,10 @@ export const create = function({ server, domainId }, opts) {
 			return { stop }
 		}
 
+		if (isFakeId(recordId) === true) {
+			return console.warn('Ackee ignores you because this is your own site')
+		}
+
 		const interval = setInterval(() => {
 
 			if (isStopped === true) {
@@ -353,15 +355,7 @@ export const create = function({ server, domainId }, opts) {
 				return
 			}
 
-			send(url, updateRecordBody(recordId), (json) => {
-
-				const recordId = json.data.updateRecord.payload.id
-
-				if (isFakeId(recordId) === true) {
-					return console.warn('Ackee ignores you because this is your own site')
-				}
-
-			})
+			send(url, updateRecordBody(recordId))
 
 		}, 15000)
 
