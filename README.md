@@ -231,6 +231,69 @@ Returns:
 
 - `{Object}` Object with a `stop` function. Call the returned function to stop updating the visit duration.
 
+### .action(eventId, attributes, callback)
+
+Creates a new action on the server to track an event.
+
+Tipps:
+
+- `key` won't show up in the Ackee UI for every event type, but must be specified nevertheless
+- Use `1` as `value` to count how many times an event occurred or a price (e.g. `9.99`) to see the sum of successful checkouts in a shop
+- Reset an existing `value` using `null` when the user canceled an event (e.g. removed an item from the checkout)
+
+Examples:
+
+```js
+instance.action('513a082c-2cd5-4939-b417-72da2fe1761d', {
+	key: 'Checkout',
+	value: 9.99
+})
+```
+
+```js
+instance.action('1b6e20cb-7c7d-48ca-8cb6-958a55d7a9e3', {
+	key: 'Subscription'
+	value: 1
+}, (actionId) => {
+	console.log(`Created new action with id '${ actionId }'`)
+})
+```
+
+Parameters:
+
+- `eventId` `{String}` Id of the event.
+- `attributes` `{Object}` Attributes that should be transferred to the server.
+  - `key` `{String}` Key that will be used to group similar actions in the Ackee UI.
+  - `value` `{?Number}` Positive float value that is added to all other numerical values of the key.
+- `callback` `{?Function}({?String})` Function that executes once the action has been created. Receives the id of the new action.
+
+### .updateAction(actionId, attributes)
+
+Updates an action on the server.
+
+Examples:
+
+```js
+instance.updateAction('7fe70f50-cb16-4e27-90ab-d6210296a4b7', {
+	key: 'Checkout',
+	value: '4.99'
+})
+```
+
+```js
+instance.updateAction('24776c2b-c5d6-4fac-852a-067d086dc4af', {
+	key: 'Subscription'
+	value: null
+})
+```
+
+Parameters:
+
+- `actionId` `{String}` Id of the action.
+- `attributes` `{Object}` Attributes that should be transferred to the server.
+  - `key` `{String}` Key that will be used to group similar actions in the Ackee UI.
+  - `value` `{?Number}` Positive float value that is added to all other numerical values of the key.
+
 ## 🔧 Options
 
 The option-object can include the following properties:
