@@ -158,9 +158,9 @@ Returns:
 
 ## ⚙️ Instance API
 
-Each ackeeTracker instance is an object with functions you can use to track your visitor.
+Each ackeeTracker instance is an object with functions you can use to track visits and events.
 
-### .record(attributes)
+### .record(domainId, attributes, callback)
 
 Creates a new record on the server and updates the record constantly to track the duration of the visit.
 
@@ -178,7 +178,13 @@ instance.record('hd11f820-68a1-11e6-8047-79c0c2d9bce0', {
 ```
 
 ```js
-const { stop } = instance.record()
+instance.record('hd11f820-68a1-11e6-8047-79c0c2d9bce0', undefined, (recordId) => {
+	console.log(`Created new record with id '${ recordId }'`)
+})
+```
+
+```js
+const { stop } = instance.record('hd11f820-68a1-11e6-8047-79c0c2d9bce0')
 
 // Manually stop updating the visit duration. The returned function should be used in
 // single-page applications. Call the function when the user navigates to a new page
@@ -190,10 +196,40 @@ Parameters:
 
 - `domainId` `{String}` Id of the domain.
 - `attributes` `{?Object}` Attributes that should be transferred to the server. Will be `ackeeTracker.attributes()` unless specified otherwise.
+- `callback` `{?Function}({?String})` Function that executes once the record has been created. Receives the id of the new record.
 
 Returns:
 
 - `{Object}` Object with a `stop` function. Call the returned function to stop updating the visit duration of the created record.
+
+### .updateRecord(recordId)
+
+Updates a record constantly to track the duration of a visit. You usually don't need to call this function, because `.record` calls this function for you. It's however helpful when you want to continue tracking a record after a page reload or after a record has been stopped.
+
+Updating attributes of an existing record isn't possible.
+
+Examples:
+
+```js
+instance.updateRecord('dfa929d3-bfbf-43f2-9234-ed646eb68767')
+```
+
+```js
+const { stop } = instance.updateRecord('dfa929d3-bfbf-43f2-9234-ed646eb68767')
+
+// Manually stop updating the visit duration. The returned function should be used in
+// single-page applications. Call the function when the user navigates to a new page
+// before creating a new record.
+stop()
+```
+
+Parameters:
+
+- `recordId` `{String}` Id of the record.
+
+Returns:
+
+- `{Object}` Object with a `stop` function. Call the returned function to stop updating the visit duration.
 
 ## 🔧 Options
 
