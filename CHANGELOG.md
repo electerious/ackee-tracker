@@ -18,7 +18,7 @@ Requires [a new `Access-Control-Allow-Credentials` header](https://github.com/el
 
 #### New `.create` syntax
 
-> This change is only relevant for you when using ackee-tracker in the [Manually](README.md#manually) or [Programmatic](#programmatic) way.
+> This change is only relevant for you when using ackee-tracker in the [Manually](README.md#manually) or [Programmatic](README.md#programmatic) way.
 
 `.create` must be called with the server URL instead of an object with the server URL and domain id.
 
@@ -32,7 +32,7 @@ Requires [a new `Access-Control-Allow-Credentials` header](https://github.com/el
 
 #### New `.record` syntax
 
-> This change is only relevant for you when using ackee-tracker in the [Manually](README.md#manually) or [Programmatic](#programmatic) way.
+> This change is only relevant for you when using ackee-tracker in the [Manually](README.md#manually) or [Programmatic](README.md#programmatic) way.
 
 `.record` must be called with the domain id.
 
@@ -43,7 +43,7 @@ Requires [a new `Access-Control-Allow-Credentials` header](https://github.com/el
 
 #### Calling `.record` again won't stop running record updates
 
-> This change is only relevant for you when using ackee-tracker in the [Manually](README.md#manually) or [Programmatic](#programmatic) way.
+> This change is only relevant for you when using ackee-tracker in the [Manually](README.md#manually) or [Programmatic](README.md#programmatic) way.
 
 We previously stopped existing record updates when calling `.record`, again. This isn't the case anymore. Please use the returned `stop` function instead.
 
