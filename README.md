@@ -284,7 +284,7 @@ instance.updateAction('7fe70f50-cb16-4e27-90ab-d6210296a4b7', {
 
 ```js
 instance.updateAction('24776c2b-c5d6-4fac-852a-067d086dc4af', {
-	key: 'Subscription'
+	key: 'Subscription',
 	value: null
 })
 ```
