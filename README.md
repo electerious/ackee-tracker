@@ -254,7 +254,7 @@ instance.action('513a082c-2cd5-4939-b417-72da2fe1761d', {
 
 ```js
 instance.action('1b6e20cb-7c7d-48ca-8cb6-958a55d7a9e3', {
-	key: 'Subscription'
+	key: 'Subscription',
 	value: 1
 }, (actionId) => {
 	console.log(`Created new action with id '${ actionId }'`)
