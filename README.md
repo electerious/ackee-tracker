@@ -19,7 +19,7 @@ A script that interacts with the API of [Ackee](https://github.com/electerious/A
 We recommend loading ackee-tracker from your Ackee instance. This ensures that the script is always in sync with your installation. The script is served as `tracker.js` or as [a name of your choice](https://github.com/electerious/Ackee/blob/master/docs/Options.md#tracker).
 
 ```html
-<script async src="https://example.com/tracker.js" data-ackee-server="https://example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0"></script>
+<script async src="https://ackee.example.com/tracker.js" data-ackee-server="https://ackee.example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0"></script>
 ```
 
 It's also possible to install ackee-tracker as a module via [npm](https://npmjs.com) or [yarn](https://yarnpkg.com).
@@ -35,7 +35,7 @@ yarn add ackee-tracker
 ## 🤗 Usage
 
 | Type                            | Usage                   | Best for                      | Records (Views) | Actions (Events) |
-| ------------------------------- | ----------------------- | ----------------------------- | --------------- | ---------------- |
+| :------------------------------ | :---------------------- | :---------------------------- | :-------------- | :--------------- |
 | [Automatically](#automatically) | Via script tag          | Simple sites                  | ✅              | ⛔️               |
 | [Manually](#manually)           | Via script tag and code | Advanced sites                | ✅              | ✅               |
 | [Programmatic](#programmatic)   | Via module              | Modern sites with build tools | ✅              | ✅               |
@@ -47,13 +47,13 @@ The easiest way to send data to your Ackee server is by including the script alo
 This approach is perfect for static sites. It tracks a visit whenever a user visits the site or navigates to a new page. Websites with client-side routing however should consider to use any of the other approaches as this one would only track the initial page.
 
 ```html
-<script async src="dist/ackee-tracker.min.js" data-ackee-server="https://example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0"></script>
+<script async src="dist/ackee-tracker.min.js" data-ackee-server="https://ackee.example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0"></script>
 ```
 
 It's also possible to customize Ackee using the `data-ackee-opts` attribute.
 
 ```html
-<script async src="dist/ackee-tracker.min.js" data-ackee-server="https://example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0" data-ackee-opts='{ "ignoreLocalhost": true }'></script>
+<script async src="dist/ackee-tracker.min.js" data-ackee-server="https://ackee.example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0" data-ackee-opts='{ "ignoreLocalhost": true }'></script>
 ```
 
 ### Manually
@@ -66,7 +66,7 @@ This approach is perfect for sites without a build system. It gives you more con
 <script src="dist/ackee-tracker.min.js"></script>
 
 <script>
-	ackeeTracker.create('https://example.com').record('hd11f820-68a1-11e6-8047-79c0c2d9bce0')
+	ackeeTracker.create('https://ackee.example.com').record('hd11f820-68a1-11e6-8047-79c0c2d9bce0')
 </script>
 ```
 
@@ -81,13 +81,13 @@ Example:
 ```js
 const ackeeTracker = require('ackee-tracker')
 
-ackeeTracker.create('https://example.com').record('hd11f820-68a1-11e6-8047-79c0c2d9bce0')
+ackeeTracker.create('https://ackee.example.com').record('hd11f820-68a1-11e6-8047-79c0c2d9bce0')
 ```
 
 ```js
 import * as ackeeTracker from 'ackee-tracker'
 
-ackeeTracker.create('https://example.com').record('hd11f820-68a1-11e6-8047-79c0c2d9bce0')
+ackeeTracker.create('https://ackee.example.com').record('hd11f820-68a1-11e6-8047-79c0c2d9bce0')
 ```
 
 ## ⚙️ API
@@ -101,7 +101,7 @@ This function runs automatically in a browser environment and fails silently whe
 Example:
 
 ```html
-<div hidden data-ackee-server="https://example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0"></div>
+<div hidden data-ackee-server="https://ackee.example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0"></div>
 ```
 
 ```js
@@ -117,11 +117,11 @@ Be sure to assign your instance to a variable. Tracking a visit or event is only
 Examples:
 
 ```js
-const instance = ackeeTracker.create('https://example.com')
+const instance = ackeeTracker.create('https://ackee.example.com')
 ```
 
 ```js
-const instance = ackeeTracker.create('https://example.com', {
+const instance = ackeeTracker.create('https://ackee.example.com', {
 	detailed: false,
 	ignoreLocalhost: true
 })
