@@ -57,6 +57,26 @@ const isFakeId = function(id) {
 }
 
 /**
+ * Get ref, source or utm_source parameter.
+ * @returns {String} source
+ */
+const source = function() {
+
+	const searchValue = (key) => (location.search.split(`${ key }=`)[1] || '').split('&')[0]
+
+	const ref = searchValue('ref')
+	const src = searchValue('source')
+	const utm = searchValue('utm_source')
+
+	if (ref !== '') return ref
+	if (src !== '') return src
+	if (utm !== '') return utm
+
+	return undefined
+
+}
+
+/**
  * Gathers all platform-, screen- and user-related information.
  * @param {Boolean} detailed - Include personal data.
  * @returns {Object} attributes - User-related information.
@@ -65,7 +85,8 @@ export const attributes = function(detailed = false) {
 
 	const defaultData = {
 		siteLocation: window.location.href,
-		siteReferrer: document.referrer
+		siteReferrer: document.referrer,
+		source: source()
 	}
 
 	const detailedData = {
