@@ -62,7 +62,7 @@ We previously stopped existing record updates when calling `.record`, again. Thi
 - Callback for `.record` (#19)
 - `.updateRecord` function to update an existing record (#19)
 - `.action` and `.updateAction` function to create and update an action to track events
-- Uses ref, source and utm_source parameters and transfers them to Ackee (thanks @BetaHuhn, #27)
+- Uses source parameter and transfers them to Ackee (thanks @BetaHuhn, #27)
 
 ### Changed
 

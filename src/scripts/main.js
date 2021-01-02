@@ -57,22 +57,14 @@ const isFakeId = function(id) {
 }
 
 /**
- * Get ref, source or utm_source parameter.
+ * Get the optional source parameter.
  * @returns {String} source
  */
 const source = function() {
 
-	const searchValue = (key) => (location.search.split(`${ key }=`)[1] || '').split('&')[0]
+	const source = (location.search.split(`source=`)[1] || '').split('&')[0]
 
-	const ref = searchValue('ref')
-	const src = searchValue('source')
-	const utm = searchValue('utm_source')
-
-	if (ref !== '') return ref
-	if (src !== '') return src
-	if (utm !== '') return utm
-
-	return undefined
+	return source === '' ? undefined : source
 
 }
 
