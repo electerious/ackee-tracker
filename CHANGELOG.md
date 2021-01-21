@@ -4,6 +4,73 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [5.0.0] - 2021-01-21
+
+This release introduces support for events along with a few breaking changes to make this feature possible.
+
+### Breaking changes
+
+#### `ignoreOwnVisits` is now enabled by default
+
+> This change is relevant for everyone.
+
+Requires [a new `Access-Control-Allow-Credentials` header](https://github.com/electerious/Ackee/blob/master/docs/CORS%20headers.md#credentials) which was previously optional. Make sure to add this header in your server or reverse proxy configuration.
+
+#### New `.create` syntax
+
+> This change is only relevant for you when using ackee-tracker in the [Manually](README.md#manually) or [Programmatic](README.md#programmatic) way.
+
+`.create` must be called with the server URL instead of an object with the server URL and domain id.
+
+```diff
+-ackeeTracker.create({
+-	server: '<server>',
+-	domainId: '<domainId>'
+-})
++ackeeTracker.create('<server>')
+```
+
+#### New `.record` syntax
+
+> This change is only relevant for you when using ackee-tracker in the [Manually](README.md#manually) or [Programmatic](README.md#programmatic) way.
+
+`.record` must be called with the domain id.
+
+```diff
+-instance.record()
++instance.record('<domainId>')
+```
+
+#### Calling `.record` again won't stop running record updates
+
+> This change is only relevant for you when using ackee-tracker in the [Manually](README.md#manually) or [Programmatic](README.md#programmatic) way.
+
+We previously stopped existing record updates when calling `.record`, again. This isn't the case anymore. Please use the returned `stop` function instead.
+
+```diff
+-// Second call stops updates of first call
+-instance.record('<domainId>')
+-instance.record('<domainId>')
++// First call needs to be stopped manually
++const { stop } = instance.record('<domainId>')
++stop()
++instance.record('<domainId>')
+```
+
+### Added
+
+- Callback for `.record` (#19)
+- `.updateRecord` function to update an existing record (#19)
+- `.action` and `.updateAction` function to create and update an action to track events
+- Uses source parameter and transfers them to Ackee (thanks @BetaHuhn, #27)
+
+### Changed
+
+- `ignoreOwnVisits` is now enabled by default
+- `.create` must be called with the server URL instead of an object with the server URL and domain id
+- `.record` must be called with the domain id
+- Calling `.record` again won't stop existing record updates. Use the returned `stop` function instead.
+
 ## [4.2.0] - 2020-11-15
 
 ### New

@@ -7,11 +7,7 @@
 	<script src="../dist/ackee-tracker.min.js"></script>
 
 	<script>
-		const { stop } = ackeeTracker.create('<server>', {
-			ignoreLocalhost: false
-		}).record('<domainId>')
-
-		setTimeout(stop, 5000)
+		ackeeTracker.create('<server>').record('<domainId>')
 	</script>
 
 </html>

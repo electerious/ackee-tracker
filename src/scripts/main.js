@@ -18,9 +18,6 @@ const validate = function(opts = {}) {
 	// Defaults to true
 	_opts.ignoreLocalhost = opts.ignoreLocalhost !== false
 
-	// Defaults to false
-	_opts.ignoreOwnVisits = opts.ignoreOwnVisits === true
-
 	return _opts
 
 }
@@ -49,13 +46,25 @@ const isBot = function(userAgent) {
 }
 
 /**
- * Check if record id is a fake id. This is the case when Ackee ignores you because of the `ackee_ignore` cookie.
- * @param {String} recordId - Record id that should be tested.
- * @returns {Boolean} isFakeRecordId
+ * Check if an id is a fake id. This is the case when Ackee ignores you because of the `ackee_ignore` cookie.
+ * @param {String} id - Id that should be tested.
+ * @returns {Boolean} isFakeId
  */
-const isFakeRecordId = function(recordId) {
+const isFakeId = function(id) {
 
-	return recordId === '88888888-8888-8888-8888-888888888888'
+	return id === '88888888-8888-8888-8888-888888888888'
+
+}
+
+/**
+ * Get the optional source parameter.
+ * @returns {String} source
+ */
+const source = function() {
+
+	const source = (location.search.split(`source=`)[1] || '').split('&')[0]
+
+	return source === '' ? undefined : source
 
 }
 
@@ -68,7 +77,8 @@ export const attributes = function(detailed = false) {
 
 	const defaultData = {
 		siteLocation: window.location.href,
-		siteReferrer: document.referrer
+		siteReferrer: document.referrer,
+		source: source()
 	}
 
 	const detailedData = {
@@ -94,6 +104,104 @@ export const attributes = function(detailed = false) {
 }
 
 /**
+ * Creates an object with a query and variables property to create a record on the server.
+ * @param {String} domainId - Id of the domain.
+ * @param {Object} input - Data that should be transferred to the server.
+ * @returns {Object} Create record body.
+ */
+const createRecordBody = function(domainId, input) {
+
+	return {
+		query: `
+			mutation createRecord($domainId: ID!, $input: CreateRecordInput!) {
+				createRecord(domainId: $domainId, input: $input) {
+					payload {
+						id
+					}
+				}
+			}
+		`,
+		variables: {
+			domainId,
+			input
+		}
+	}
+
+}
+
+/**
+ * Creates an object with a query and variables property to update a record on the server.
+ * @param {String} recordId - Id of the record.
+ * @returns {Object} Update record body.
+ */
+const updateRecordBody = function(recordId) {
+
+	return {
+		query: `
+			mutation updateRecord($recordId: ID!) {
+				updateRecord(id: $recordId) {
+					success
+				}
+			}
+		`,
+		variables: {
+			recordId
+		}
+	}
+
+}
+
+/**
+ * Creates an object with a query and variables property to create an action on the server.
+ * @param {String} eventId - Id of the event.
+ * @param {Object} input - Data that should be transferred to the server.
+ * @returns {Object} Create action body.
+ */
+const createActionBody = function(eventId, input) {
+
+	return {
+		query: `
+			mutation createAction($eventId: ID!, $input: CreateActionInput!) {
+				createAction(eventId: $eventId, input: $input) {
+					payload {
+						id
+					}
+				}
+			}
+		`,
+		variables: {
+			eventId,
+			input
+		}
+	}
+
+}
+
+/**
+ * Creates an object with a query and variables property to update an action on the server.
+ * @param {String} actionId - Id of the action.
+ * @param {Object} input - Data that should be transferred to the server.
+ * @returns {Object} Update action body.
+ */
+const updateActionBody = function(actionId, input) {
+
+	return {
+		query: `
+			mutation updateAction($actionId: ID!, $input: UpdateActionInput!) {
+				updateAction(id: $actionId, input: $input) {
+					success
+				}
+			}
+		`,
+		variables: {
+			actionId,
+			input
+		}
+	}
+
+}
+
+/**
  * Construct URL to the GraphQL endpoint of Ackee.
  * @param {String} server - URL of the Ackee server.
  * @returns {String} endpoint - URL to the GraphQL endpoint of the Ackee server.
@@ -111,12 +219,10 @@ const endpoint = function(server) {
  * Won't catch all errors as some are already logged by the browser.
  * In this case the callback won't fire.
  * @param {String} url - URL to the GraphQL endpoint of the Ackee server.
- * @param {String} query - GraphQL query.
- * @param {?Object} variables - Variables for the GraphQL query.
- * @param {?Object} opts
- * @param {Function} next - The callback that handles the response. Receives the following properties: err, json.
+ * @param {Object} body - JSON which will be send to the server.
+ * @param {?Function} next - The callback that handles the response. Receives the following properties: json.
  */
-const send = function(url, query, variables, opts, next) {
+const send = function(url, body, next) {
 
 	const xhr = new XMLHttpRequest()
 
@@ -124,115 +230,32 @@ const send = function(url, query, variables, opts, next) {
 
 	xhr.onload = () => {
 
-		if (xhr.status === 200 || xhr.status === 201) {
+		if (xhr.status !== 200) {
+			throw new Error('Server returned with an unhandled status')
+		}
 
-			let json = null
+		let json = null
 
-			try {
-				json = JSON.parse(xhr.responseText)
-			} catch (e) {
-				return next(new Error('Failed to parse response from server'))
-			}
+		try {
+			json = JSON.parse(xhr.responseText)
+		} catch (e) {
+			throw new Error('Failed to parse response from server')
+		}
 
-			if (json.errors != null) {
-				return next(new Error(json.errors[0].message))
-			}
+		if (json.errors != null) {
+			throw new Error(json.errors[0].message)
+		}
 
-			return next(null, json)
-
-		} else {
-
-			return next(new Error('Server returned with an unhandled status'))
-
+		if (typeof next === 'function') {
+			return next(json)
 		}
 
 	}
 
 	xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+	xhr.withCredentials = true
 
-	if (opts.ignoreOwnVisits) xhr.withCredentials = true
-
-	xhr.send(JSON.stringify({ query, variables }))
-
-}
-
-/**
- * Creates a new record on the server and updates the record
- * every x seconds to track the duration of the visit.
- * @param {String} server - URL of the Ackee server.
- * @param {String} domainId - Id of the domain.
- * @param {Object} attrs - Attributes that should be transferred to the server.
- * @param {Object} opts
- * @param {Function} active - Indicates if the record should still update.
- * @returns {?*}
- */
-const record = function(server, domainId, attrs, opts, active) {
-
-	if (opts.ignoreLocalhost === true && isLocalhost(location.hostname) === true) {
-		return console.warn('Ackee ignores you because you are on localhost')
-	}
-
-	if (isBot(navigator.userAgent) === true) {
-		return console.warn('Ackee ignores you because you are a bot')
-	}
-
-	const url = endpoint(server)
-
-	const createQuery = `
-		mutation createRecord($domainId: ID!, $input: CreateRecordInput!) {
-			createRecord(domainId: $domainId, input: $input) {
-				payload {
-					id
-				}
-			}
-		}
-	`
-
-	const createVariables = {
-		domainId,
-		input: attrs
-	}
-
-	// Send initial request to server. This will create a new record.
-	send(url, createQuery, createVariables, opts, (err, json) => {
-
-		if (err != null) return console.error(err)
-
-		const recordId = json.data.createRecord.payload.id
-
-		if (isFakeRecordId(recordId) === true) {
-			return console.warn('Ackee ignores you because this is your own site')
-		}
-
-		// PATCH the record constantly to track the duration of the visit
-		const interval = setInterval(() => {
-
-			if (active() === false) {
-				clearInterval(interval)
-				return
-			}
-
-			const updateQuery = `
-				mutation updateRecord($id: ID!) {
-					updateRecord(id: $id) {
-						success
-					}
-				}
-			`
-
-			const updateVariables = {
-				id: recordId
-			}
-
-			send(url, updateQuery, updateVariables, opts, (err) => {
-
-				if (err != null) return console.error(err)
-
-			})
-
-		}, 15000)
-
-	})
+	xhr.send(JSON.stringify(body))
 
 }
 
@@ -250,51 +273,141 @@ export const detect = function() {
 	const domainId = elem.getAttribute('data-ackee-domain-id')
 	const opts = elem.getAttribute('data-ackee-opts') || '{}'
 
-	create({ server, domainId }, JSON.parse(opts)).record()
+	create(server, JSON.parse(opts)).record(domainId)
 
 }
 
 /**
  * Creates a new instance.
- * @param {Object} server - Server details.
+ * @param {String} server - URL of the Ackee server.
  * @param {?Object} opts
  * @returns {Object} instance
  */
-export const create = function({ server, domainId }, opts) {
+export const create = function(server, opts) {
 
-	let globalExecutionId
-
-	// Validate options
 	opts = validate(opts)
+	const url = endpoint(server)
+	const noop = () => {}
+
+	// Fake instance when Ackee ignores you
+	const fakeInstance = {
+		record: () => ({ stop: noop }),
+		updateRecord: () => ({ stop: noop }),
+		action: noop,
+		updateAction: noop
+	}
+
+	if (opts.ignoreLocalhost === true && isLocalhost(location.hostname) === true) {
+		console.warn('Ackee ignores you because you are on localhost')
+		return fakeInstance
+	}
+
+	if (isBot(navigator.userAgent) === true) {
+		console.warn('Ackee ignores you because you are a bot')
+		return fakeInstance
+	}
 
 	// Creates a new record on the server and updates the record
 	// very x seconds to track the duration of the visit. Tries to use
 	// the default attributes when there're no custom attributes defined.
-	const _record = (attrs = attributes(opts.detailed)) => {
+	const _record = (domainId, attrs = attributes(opts.detailed), next) => {
 
-		// Manually stop updating
+		// Function to stop updating the record
 		let isStopped = false
-
-		// Automatically stop updating when calling the record function, again
-		const localExecutionId = globalExecutionId = Date.now()
-
-		// Helper function that checks if the record should still update
-		const active = () => isStopped === false && localExecutionId === globalExecutionId
-
-		// Call this function to stop updating the record
 		const stop = () => { isStopped = true }
 
-		record(server, domainId, attrs, opts, active)
+		send(url, createRecordBody(domainId, attrs), (json) => {
 
-		return {
-			stop
-		}
+			const recordId = json.data.createRecord.payload.id
+
+			if (isFakeId(recordId) === true) {
+				return console.warn('Ackee ignores you because this is your own site')
+			}
+
+			const interval = setInterval(() => {
+
+				if (isStopped === true) {
+					clearInterval(interval)
+					return
+				}
+
+				send(url, updateRecordBody(recordId))
+
+			}, 15000)
+
+			if (typeof next === 'function') {
+				return next(recordId)
+			}
+
+		})
+
+		return { stop }
 
 	}
 
-	// Return the instance
+	// Updates a record very x seconds to track the duration of the visit
+	const _updateRecord = (recordId) => {
+
+		// Function to stop updating the record
+		let isStopped = false
+		const stop = () => { isStopped = true }
+
+		if (isFakeId(recordId) === true) {
+			console.warn('Ackee ignores you because this is your own site')
+			return { stop }
+		}
+
+		const interval = setInterval(() => {
+
+			if (isStopped === true) {
+				clearInterval(interval)
+				return
+			}
+
+			send(url, updateRecordBody(recordId))
+
+		}, 15000)
+
+		return { stop }
+
+	}
+
+	// Creates a new action on the server
+	const _action = (eventId, attrs, next) => {
+
+		send(url, createActionBody(eventId, attrs), (json) => {
+
+			const actionId = json.data.createAction.payload.id
+
+			if (isFakeId(actionId) === true) {
+				return console.warn('Ackee ignores you because this is your own site')
+			}
+
+			if (typeof next === 'function') {
+				return next(actionId)
+			}
+
+		})
+
+	}
+
+	// Updates an action
+	const _updateAction = (actionId, attrs) => {
+
+		if (isFakeId(actionId) === true) {
+			return console.warn('Ackee ignores you because this is your own site')
+		}
+
+		send(url, updateActionBody(actionId, attrs))
+
+	}
+
+	// Return the real instance
 	return {
-		record: _record
+		record: _record,
+		updateRecord: _updateRecord,
+		action: _action,
+		updateAction: _updateAction
 	}
 
 }
