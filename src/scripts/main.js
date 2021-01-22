@@ -18,6 +18,9 @@ const validate = function(opts = {}) {
 	// Defaults to true
 	_opts.ignoreLocalhost = opts.ignoreLocalhost !== false
 
+	// Defaults to true
+	_opts.ignoreOwnVisits = opts.ignoreOwnVisits !== false
+
 	return _opts
 
 }
@@ -220,9 +223,10 @@ const endpoint = function(server) {
  * In this case the callback won't fire.
  * @param {String} url - URL to the GraphQL endpoint of the Ackee server.
  * @param {Object} body - JSON which will be send to the server.
+ * @param {?Object} opts - Options
  * @param {?Function} next - The callback that handles the response. Receives the following properties: json.
  */
-const send = function(url, body, next) {
+const send = function(url, body, opts, next) {
 
 	const xhr = new XMLHttpRequest()
 
@@ -253,7 +257,7 @@ const send = function(url, body, next) {
 	}
 
 	xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
-	xhr.withCredentials = true
+	xhr.withCredentials = opts.ignoreOwnVisits
 
 	xhr.send(JSON.stringify(body))
 
@@ -316,7 +320,7 @@ export const create = function(server, opts) {
 		let isStopped = false
 		const stop = () => { isStopped = true }
 
-		send(url, createRecordBody(domainId, attrs), (json) => {
+		send(url, createRecordBody(domainId, attrs), opts, (json) => {
 
 			const recordId = json.data.createRecord.payload.id
 
@@ -331,7 +335,7 @@ export const create = function(server, opts) {
 					return
 				}
 
-				send(url, updateRecordBody(recordId))
+				send(url, updateRecordBody(recordId), opts)
 
 			}, 15000)
 
@@ -364,7 +368,7 @@ export const create = function(server, opts) {
 				return
 			}
 
-			send(url, updateRecordBody(recordId))
+			send(url, updateRecordBody(recordId), opts)
 
 		}, 15000)
 
@@ -375,7 +379,7 @@ export const create = function(server, opts) {
 	// Creates a new action on the server
 	const _action = (eventId, attrs, next) => {
 
-		send(url, createActionBody(eventId, attrs), (json) => {
+		send(url, createActionBody(eventId, attrs), opts, (json) => {
 
 			const actionId = json.data.createAction.payload.id
 
@@ -398,7 +402,7 @@ export const create = function(server, opts) {
 			return console.warn('Ackee ignores you because this is your own site')
 		}
 
-		send(url, updateActionBody(actionId, attrs))
+		send(url, updateActionBody(actionId, attrs), opts)
 
 	}
 
