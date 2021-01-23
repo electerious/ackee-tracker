@@ -57,6 +57,16 @@ const isFakeId = function(id) {
 }
 
 /**
+ * Check if the website is in background (e.g. user has minimzed or switched tabs)
+ * @returns {boolean}
+ */
+const isInBackground = function() {
+
+	return document.visibilityState === 'hidden'
+
+}
+
+/**
  * Get the optional source parameter.
  * @returns {String} source
  */
@@ -326,6 +336,9 @@ export const create = function(server, opts) {
 
 			const interval = setInterval(() => {
 
+				// if document is in background (e.g. window minimized, tab switched) ignore
+				if (isInBackground()) return
+
 				if (isStopped === true) {
 					clearInterval(interval)
 					return
@@ -358,6 +371,9 @@ export const create = function(server, opts) {
 		}
 
 		const interval = setInterval(() => {
+
+			// if document is in background (e.g. window minimized, tab switched) ignore
+			if (isInBackground()) return
 
 			if (isStopped === true) {
 				clearInterval(interval)
