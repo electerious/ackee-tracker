@@ -223,7 +223,7 @@ const endpoint = function(server) {
  * In this case the callback won't fire.
  * @param {String} url - URL to the GraphQL endpoint of the Ackee server.
  * @param {Object} body - JSON which will be send to the server.
- * @param {?Object} opts - Options
+ * @param {Object} opts - Options.
  * @param {?Function} next - The callback that handles the response. Receives the following properties: json.
  */
 const send = function(url, body, opts, next) {
