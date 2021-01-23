@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- Re-added `ignoreOwnVisits` option which is now enabled by default, but can be turned off when using a wildcard `Access-Control-Allow-Origin` header
+
 ## [5.0.0] - 2021-01-21
 
 This release introduces support for events along with a few breaking changes to make this feature possible.
@@ -14,7 +20,7 @@ This release introduces support for events along with a few breaking changes to 
 
 > This change is relevant for everyone.
 
-Requires [a new `Access-Control-Allow-Credentials` header](https://github.com/electerious/Ackee/blob/master/docs/CORS%20headers.md#credentials) which was previously optional. Make sure to add this header in your server or reverse proxy configuration.
+Requires [a new `Access-Control-Allow-Credentials` header](https://github.com/electerious/Ackee/blob/master/docs/CORS%20headers.md#credentials) and a non-wildcard `Access-Control-Allow-Origin` header. Make sure to add this header in your server or reverse proxy configuration. Disable `ignoreOwnVisits` when using a wildcard `Access-Control-Allow-Origin` header.
 
 #### New `.create` syntax
 
