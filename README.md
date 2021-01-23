@@ -312,9 +312,8 @@ The option-object can include the following properties:
 	 */
 	ignoreLocalhost: true
 	/*
-	 * Enable or disable the tracking of your own visits (as identified by your login to the Ackee dashboard).
-	 * This is enabled by default, however as it requires a non-wildcard Access-Control-Allow-Origin header.
-	 * Hence this can be turned off.
+	 * Enable or disable the tracking of your own visits.
+	 * This is enabled by default, but should be turned off when using a wildcard Access-Control-Allow-Origin header.
 	 * Some browsers strictly block third-party cookies. The option won't have an impact when this is the case.
 	 */
 	ignoreOwnVisits: true
