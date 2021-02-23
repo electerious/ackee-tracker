@@ -36,7 +36,7 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-react-native": "^3.10.0",
     "http-server": "^0.12.3",
-    "husky": "^4.3.8",
+    "husky": "^5.1.1",
     "rosid-handler-js": "^13.0.2"
   },
   "dependencies": {
