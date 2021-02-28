@@ -46,7 +46,7 @@ const isBot = function(userAgent) {
 }
 
 /**
- * Check if an id is a fake id. This is the case when Ackee ignores you because of the `ackee_ignore` cookie.
+ * Checks if an id is a fake id. This is the case when Ackee ignores you because of the `ackee_ignore` cookie.
  * @param {String} id - Id that should be tested.
  * @returns {Boolean} isFakeId
  */
@@ -57,7 +57,7 @@ const isFakeId = function(id) {
 }
 
 /**
- * Check if the website is in background (e.g. user has minimzed or switched tabs)
+ * Checks if the website is in background (e.g. user has minimzed or switched tabs).
  * @returns {boolean}
  */
 const isInBackground = function() {
