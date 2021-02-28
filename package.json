@@ -6,6 +6,7 @@
   ],
   "description": "Transfer data to Ackee",
   "main": "dist/ackee-tracker.min.js",
+  "module": "src/scripts/main.js",
   "keywords": [
     "ackee",
     "tracking",
