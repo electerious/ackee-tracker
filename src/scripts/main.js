@@ -336,13 +336,12 @@ export const create = function(server, opts) {
 
 			const interval = setInterval(() => {
 
-				// if document is in background (e.g. window minimized, tab switched) ignore
-				if (isInBackground()) return
-
 				if (isStopped === true) {
 					clearInterval(interval)
 					return
 				}
+				
+				if (isInBackground() === true) return
 
 				send(url, updateRecordBody(recordId))
 
@@ -372,13 +371,12 @@ export const create = function(server, opts) {
 
 		const interval = setInterval(() => {
 
-			// if document is in background (e.g. window minimized, tab switched) ignore
-			if (isInBackground()) return
-
 			if (isStopped === true) {
 				clearInterval(interval)
 				return
 			}
+			
+			if (isInBackground() === true) return
 
 			send(url, updateRecordBody(recordId))
 
