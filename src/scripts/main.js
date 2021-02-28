@@ -344,7 +344,7 @@ export const create = function(server, opts) {
 					clearInterval(interval)
 					return
 				}
-				
+
 				if (isInBackground() === true) return
 
 				send(url, updateRecordBody(recordId), opts)
@@ -379,7 +379,7 @@ export const create = function(server, opts) {
 				clearInterval(interval)
 				return
 			}
-			
+
 			if (isInBackground() === true) return
 
 			send(url, updateRecordBody(recordId), opts)
