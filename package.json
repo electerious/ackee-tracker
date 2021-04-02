@@ -1,11 +1,12 @@
 {
   "name": "ackee-tracker",
-  "version": "5.0.1",
+  "version": "5.1.0",
   "authors": [
     "Tobias Reich <tobias@electerious.com>"
   ],
   "description": "Transfer data to Ackee",
   "main": "dist/ackee-tracker.min.js",
+  "module": "src/scripts/main.js",
   "keywords": [
     "ackee",
     "tracking",
@@ -30,7 +31,7 @@
   ],
   "devDependencies": {
     "@electerious/eslint-config": "^1.4.0",
-    "eslint": "^7.18.0",
+    "eslint": "^7.21.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",

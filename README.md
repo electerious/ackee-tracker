@@ -310,7 +310,7 @@ The option-object can include the following properties:
 	/*
 	 * Enable or disable tracking when on localhost.
 	 */
-	ignoreLocalhost: true
+	ignoreLocalhost: true,
 	/*
 	 * Enable or disable the tracking of your own visits.
 	 * This is enabled by default, but should be turned off when using a wildcard Access-Control-Allow-Origin header.
