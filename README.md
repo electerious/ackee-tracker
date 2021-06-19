@@ -108,7 +108,7 @@ Example:
 ackeeTracker.detect()
 ```
 
-### .create(server, opts)
+### .create(server, options)
 
 Creates a new ackee-tracker instance.
 
@@ -130,7 +130,7 @@ const instance = ackeeTracker.create('https://ackee.example.com', {
 Parameters:
 
 - `server` `{String}` An URL that points to your [Ackee](https://github.com/electerious/Ackee) installation. The `server` property must not end with a slash.
-- `opts` `{?Object}` An object of [options](#-options).
+- `options` `{?Object}` An object of [options](#-options).
 
 Returns:
 
