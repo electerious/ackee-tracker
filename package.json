@@ -34,13 +34,7 @@
     "platform": "^1.3.6"
   },
   "devDependencies": {
-    "@electerious/eslint-config": "^2.0.3",
-    "eslint": "^7.29.0",
-    "eslint-plugin-ava": "^12.0.0",
-    "eslint-plugin-import": "^2.23.4",
-    "eslint-plugin-react": "^7.24.0",
-    "eslint-plugin-react-hooks": "^4.2.0",
-    "eslint-plugin-unicorn": "^33.0.1",
+    "@electerious/eslint-config": "^3.0.0",
     "http-server": "^0.12.3",
     "rosid-handler-js": "^13.0.2"
   },
