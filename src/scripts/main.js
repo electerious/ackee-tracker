@@ -52,11 +52,21 @@ const isFakeId = function(id) {
 }
 
 /**
- * Checks if the website is in background (e.g. user has minimzed or switched tabs).
+ * Checks if the website is in background (e.g. user has minimized or switched tabs).
  * @returns {boolean}
  */
 const isInBackground = function() {
 	return document.visibilityState === 'hidden'
+}
+
+/**
+ * Get the site referrer.
+ * @returns {String} siteReferrer
+ */
+const siteReferrer = function() {
+	const siteReferrer = document.referrer
+
+	return siteReferrer === '' ? undefined : siteReferrer
 }
 
 /**
@@ -77,7 +87,7 @@ const source = function() {
 export const attributes = function(detailed = false) {
 	const defaultData = {
 		siteLocation: window.location.href,
-		siteReferrer: document.referrer,
+		siteReferrer: siteReferrer(),
 		source: source(),
 	}
 

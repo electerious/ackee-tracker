@@ -4,7 +4,7 @@
 
 # ackee-tracker
 
-[![Donate via PayPal](https://img.shields.io/badge/paypal-donate-009cde.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CYKBESW577YWE)
+[![Test](https://github.com/electerious/ackee-tracker/actions/workflows/test.yml/badge.svg)](https://github.com/electerious/ackee-tracker/actions/workflows/test.yml) [![Donate via PayPal](https://img.shields.io/badge/paypal-donate-009cde.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CYKBESW577YWE)
 
 A script that interacts with the API of [Ackee](https://github.com/electerious/Ackee). Should be included on your site to track data.
 
@@ -174,8 +174,7 @@ instance.record('hd11f820-68a1-11e6-8047-79c0c2d9bce0')
 
 ```js
 instance.record('hd11f820-68a1-11e6-8047-79c0c2d9bce0', {
-	siteLocation: window.location.href,
-	siteReferrer: document.referrer
+	siteLocation: window.location.href
 })
 ```
 
