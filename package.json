@@ -1,12 +1,7 @@
 {
   "name": "ackee-tracker",
   "version": "5.1.1",
-  "authors": [
-    "Tobias Reich <tobias@electerious.com>"
-  ],
   "description": "Transfer data to Ackee",
-  "main": "dist/ackee-tracker.min.js",
-  "module": "src/scripts/main.js",
   "keywords": [
     "ackee",
     "tracking",
@@ -14,32 +9,41 @@
     "analytics",
     "statistics"
   ],
-  "scripts": {
-    "build": "node build.js",
-    "demo": "http-server -o",
-    "test": "npm run lint",
-    "lint": "eslint \"src/**/*.js\""
-  },
-  "license": "MIT",
   "homepage": "https://github.com/electerious/ackee-tracker",
   "repository": {
     "type": "git",
     "url": "https://github.com/electerious/ackee-tracker.git"
   },
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/ackee-tracker.min.js",
+  "module": "src/scripts/main.js",
   "files": [
     "dist",
     "src"
   ],
+  "scripts": {
+    "build": "node build.js",
+    "demo": "http-server -o",
+    "eslint": "eslint \"**/*.js\"",
+    "format": "npm run eslint -- --fix && npm run prettier -- --write",
+    "lint": "npm run eslint && npm run prettier -- --check",
+    "prettier": "prettier \"**/*.{js,json,md,yml,html}\"",
+    "test": "npm run lint"
+  },
   "dependencies": {
     "platform": "^1.3.6"
   },
   "devDependencies": {
-    "@electerious/eslint-config": "^3.5.0",
-    "http-server": "^0.12.3",
+    "@electerious/eslint-config": "^5.2.1",
+    "@electerious/prettier-config": "^4.0.0",
+    "eslint": "^9.39.1",
+    "globals": "^16.5.0",
+    "http-server": "^14.1.1",
+    "prettier": "^3.7.1",
     "rosid-handler-js": "^13.0.2"
   },
-  "eslintConfig": {
-    "root": true,
-    "extends": "@electerious/eslint-config"
-  }
+  "authors": [
+    "Tobias Reich <tobias@electerious.com>"
+  ]
 }

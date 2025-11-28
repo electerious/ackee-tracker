@@ -19,7 +19,12 @@ A script that interacts with the API of [Ackee](https://github.com/electerious/A
 We recommend loading ackee-tracker from your Ackee instance. This ensures that the script is always in sync with your installation. The script is served as `tracker.js` or as [a name of your choice](https://github.com/electerious/Ackee/blob/master/docs/Options.md#tracker).
 
 ```html
-<script async src="https://ackee.example.com/tracker.js" data-ackee-server="https://ackee.example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0"></script>
+<script
+  async
+  src="https://ackee.example.com/tracker.js"
+  data-ackee-server="https://ackee.example.com"
+  data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0"
+></script>
 ```
 
 It's also possible to install ackee-tracker as a module via [npm](https://npmjs.com) or [yarn](https://yarnpkg.com).
@@ -47,13 +52,24 @@ The easiest way to send data to your Ackee server is by including the script alo
 This approach is perfect for static sites. It tracks a visit whenever a user visits the site or navigates to a new page. Websites with client-side routing however should consider to use any of the other approaches as this one would only track the initial page.
 
 ```html
-<script async src="dist/ackee-tracker.min.js" data-ackee-server="https://ackee.example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0"></script>
+<script
+  async
+  src="dist/ackee-tracker.min.js"
+  data-ackee-server="https://ackee.example.com"
+  data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0"
+></script>
 ```
 
 It's also possible to customize Ackee using the `data-ackee-opts` attribute.
 
 ```html
-<script async src="dist/ackee-tracker.min.js" data-ackee-server="https://ackee.example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0" data-ackee-opts='{ "ignoreLocalhost": true }'></script>
+<script
+  async
+  src="dist/ackee-tracker.min.js"
+  data-ackee-server="https://ackee.example.com"
+  data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0"
+  data-ackee-opts='{ "ignoreLocalhost": true }'
+></script>
 ```
 
 ### Manually
@@ -66,7 +82,7 @@ This approach is perfect for sites without a build system. It gives you more con
 <script src="dist/ackee-tracker.min.js"></script>
 
 <script>
-	ackeeTracker.create('https://ackee.example.com').record('hd11f820-68a1-11e6-8047-79c0c2d9bce0')
+  ackeeTracker.create('https://ackee.example.com').record('hd11f820-68a1-11e6-8047-79c0c2d9bce0')
 </script>
 ```
 
@@ -101,7 +117,11 @@ This function runs automatically in a browser environment and fails silently whe
 Example:
 
 ```html
-<div hidden data-ackee-server="https://ackee.example.com" data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0"></div>
+<div
+  hidden
+  data-ackee-server="https://ackee.example.com"
+  data-ackee-domain-id="hd11f820-68a1-11e6-8047-79c0c2d9bce0"
+></div>
 ```
 
 ```js
@@ -122,19 +142,19 @@ const instance = ackeeTracker.create('https://ackee.example.com')
 
 ```js
 const instance = ackeeTracker.create('https://ackee.example.com', {
-	detailed: false,
-	ignoreLocalhost: true
+  detailed: false,
+  ignoreLocalhost: true,
 })
 ```
 
 Parameters:
 
-- `server` `{String}` An URL that points to your [Ackee](https://github.com/electerious/Ackee) installation. The `server` property must not end with a slash.
-- `options` `{?Object}` An object of [options](#-options).
+- `server` `{string}` An URL that points to your [Ackee](https://github.com/electerious/Ackee) installation. The `server` property must not end with a slash.
+- `options` `{?object}` An object of [options](#-options).
 
 Returns:
 
-- `{Object}` The created instance.
+- `{object}` The created instance.
 
 ### .attributes()
 
@@ -152,11 +172,11 @@ const attributes = ackeeTracker.attributes(true)
 
 Parameters:
 
-- `detailed` `{Boolean}` Include personal data.
+- `detailed` `{boolean}` Include personal data.
 
 Returns:
 
-- `{Object}` User-related information.
+- `{object}` User-related information.
 
 ## ⚙️ Instance API
 
@@ -174,13 +194,13 @@ instance.record('hd11f820-68a1-11e6-8047-79c0c2d9bce0')
 
 ```js
 instance.record('hd11f820-68a1-11e6-8047-79c0c2d9bce0', {
-	siteLocation: window.location.href
+  siteLocation: window.location.href,
 })
 ```
 
 ```js
 instance.record('hd11f820-68a1-11e6-8047-79c0c2d9bce0', undefined, (recordId) => {
-	console.log(`Created new record with id '${ recordId }'`)
+  console.log(`Created new record with id '${recordId}'`)
 })
 ```
 
@@ -195,13 +215,13 @@ stop()
 
 Parameters:
 
-- `domainId` `{String}` Id of the domain.
-- `attributes` `{?Object}` Attributes that should be transferred to the server. Will be `ackeeTracker.attributes()` unless specified otherwise.
-- `callback` `{?Function}({?String})` Function that executes once the record has been created. Receives the id of the new record.
+- `domainId` `{string}` Id of the domain.
+- `attributes` `{?object}` Attributes that should be transferred to the server. Will be `ackeeTracker.attributes()` unless specified otherwise.
+- `callback` `{?function(string)}` Function that executes once the record has been created. Receives the id of the new record.
 
 Returns:
 
-- `{Object}` Object with a `stop` function. Call the returned function to stop updating the visit duration of the created record.
+- `{object}` Object with a `stop` function. Call the returned function to stop updating the visit duration of the created record.
 
 ### .updateRecord(recordId)
 
@@ -226,11 +246,11 @@ stop()
 
 Parameters:
 
-- `recordId` `{String}` Id of the record.
+- `recordId` `{string}` Id of the record.
 
 Returns:
 
-- `{Object}` Object with a `stop` function. Call the returned function to stop updating the visit duration.
+- `{object}` Object with a `stop` function. Call the returned function to stop updating the visit duration.
 
 ### .action(eventId, attributes, callback)
 
@@ -246,27 +266,31 @@ Examples:
 
 ```js
 instance.action('513a082c-2cd5-4939-b417-72da2fe1761d', {
-	key: 'Checkout',
-	value: 9.99
+  key: 'Checkout',
+  value: 9.99,
 })
 ```
 
 ```js
-instance.action('1b6e20cb-7c7d-48ca-8cb6-958a55d7a9e3', {
-	key: 'Subscription',
-	value: 1
-}, (actionId) => {
-	console.log(`Created new action with id '${ actionId }'`)
-})
+instance.action(
+  '1b6e20cb-7c7d-48ca-8cb6-958a55d7a9e3',
+  {
+    key: 'Subscription',
+    value: 1,
+  },
+  (actionId) => {
+    console.log(`Created new action with id '${actionId}'`)
+  },
+)
 ```
 
 Parameters:
 
-- `eventId` `{String}` Id of the event.
-- `attributes` `{Object}` Attributes that should be transferred to the server.
-  - `key` `{String}` Key that will be used to group similar actions in the Ackee UI.
-  - `value` `{?Number}` Positive float value that is added to all other numerical values of the key.
-- `callback` `{?Function}({?String})` Function that executes once the action has been created. Receives the id of the new action.
+- `eventId` `{string}` Id of the event.
+- `attributes` `{object}` Attributes that should be transferred to the server.
+  - `key` `{string}` Key that will be used to group similar actions in the Ackee UI.
+  - `value` `{?number}` Positive float value that is added to all other numerical values of the key.
+- `callback` `{?function(string)}` Function that executes once the action has been created. Receives the id of the new action.
 
 ### .updateAction(actionId, attributes)
 
@@ -276,24 +300,24 @@ Examples:
 
 ```js
 instance.updateAction('7fe70f50-cb16-4e27-90ab-d6210296a4b7', {
-	key: 'Checkout',
-	value: '4.99'
+  key: 'Checkout',
+  value: '4.99',
 })
 ```
 
 ```js
 instance.updateAction('24776c2b-c5d6-4fac-852a-067d086dc4af', {
-	key: 'Subscription',
-	value: null
+  key: 'Subscription',
+  value: null,
 })
 ```
 
 Parameters:
 
-- `actionId` `{String}` Id of the action.
-- `attributes` `{Object}` Attributes that should be transferred to the server.
-  - `key` `{String}` Key that will be used to group similar actions in the Ackee UI.
-  - `value` `{?Number}` Positive float value that is added to all other numerical values of the key.
+- `actionId` `{string}` Id of the action.
+- `attributes` `{object}` Attributes that should be transferred to the server.
+  - `key` `{string}` Key that will be used to group similar actions in the Ackee UI.
+  - `value` `{?number}` Positive float value that is added to all other numerical values of the key.
 
 ## 🔧 Options
 

@@ -1,17 +1,17 @@
 <!doctype html>
 <html lang="en">
+  <meta charset="utf-8" />
+  <title>ackee-tracker Demo</title>
 
-	<meta charset="utf-8">
-	<title>ackee-tracker Demo</title>
+  <script src="../dist/ackee-tracker.min.js"></script>
 
-	<script src="../dist/ackee-tracker.min.js"></script>
+  <script>
+    const { stop } = ackeeTracker
+      .create('<server>', {
+        ignoreLocalhost: false,
+      })
+      .record('<domainId>')
 
-	<script>
-		const { stop } = ackeeTracker.create('<server>', {
-			ignoreLocalhost: false
-		}).record('<domainId>')
-
-		setTimeout(stop, 5000)
-	</script>
-
+    setTimeout(stop, 5000)
+  </script>
 </html>

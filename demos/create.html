@@ -1,18 +1,18 @@
 <!doctype html>
 <html lang="en">
+  <meta charset="utf-8" />
+  <title>ackee-tracker Demo</title>
 
-	<meta charset="utf-8">
-	<title>ackee-tracker Demo</title>
+  <script src="../dist/ackee-tracker.min.js"></script>
 
-	<script src="../dist/ackee-tracker.min.js"></script>
+  <script>
+    console.log('Default attributes', ackeeTracker.attributes())
+    console.log('Detailed attributes', ackeeTracker.attributes(true))
 
-	<script>
-		console.log('Default attributes', ackeeTracker.attributes())
-		console.log('Detailed attributes', ackeeTracker.attributes(true))
-
-		ackeeTracker.create('<server>', {
-			ignoreLocalhost: false
-		}).record('<domainId>')
-	</script>
-
+    ackeeTracker
+      .create('<server>', {
+        ignoreLocalhost: false,
+      })
+      .record('<domainId>')
+  </script>
 </html>
