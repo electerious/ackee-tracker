@@ -12,7 +12,7 @@
   "homepage": "https://github.com/electerious/ackee-tracker",
   "repository": {
     "type": "git",
-    "url": "https://github.com/electerious/ackee-tracker.git"
+    "url": "git+https://github.com/electerious/ackee-tracker.git"
   },
   "license": "MIT",
   "type": "module",
