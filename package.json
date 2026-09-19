@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@electerious/eslint-config": "^5.2.2",
-    "@electerious/prettier-config": "^4.0.1",
+    "@electerious/prettier-config": "^5.0.0",
     "eslint": "^9.39.4",
     "globals": "^16.5.0",
     "http-server": "^14.1.1",
